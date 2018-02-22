@@ -1,0 +1,16 @@
+**/node_modules
+**/.vscode
+**/.gradle/
+**/.settings/
+**/bin
+**/build
+**/temp/
+**/Debug
+**/Release
+*.classpath
+*.class
+*.log
+*.project
+*.DS_Store
+package-lock.json
+!build.gradle
