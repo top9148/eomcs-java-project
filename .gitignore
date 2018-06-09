@@ -1,10 +1,10 @@
 **/node_modules
 **/.vscode
-**/.gradle/
-**/.settings/
+**/.gradle
+**/.settings
 **/bin
 **/build
-**/temp/
+**/temp
 **/Debug
 **/Release
 *.classpath
@@ -13,4 +13,5 @@
 *.project
 *.DS_Store
 package-lock.json
+
 !build.gradle
