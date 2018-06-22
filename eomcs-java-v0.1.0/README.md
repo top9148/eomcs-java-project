@@ -42,8 +42,8 @@ C:\Users\eomcs\study-workspace
 ```
 
 다음은 `콘솔창`을 통해 디렉토리를 만드는 예이다.(`파일 탐색기`를 사용해도 된다)
-```
-c:\Users\eomcs> mkdir study-workspace
+```bash
+[~]$ mkdir study-workspace
 ```
 
 ### 2. 프로젝트 디렉토리 생성하기
