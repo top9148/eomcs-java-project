@@ -35,28 +35,10 @@ public class App {
         listMember();
         
       } else if (command.equals("/board/add")) {
-        Board board = new Board();
-        
-        System.out.print("번호? ");
-        board.no = Integer.parseInt(keyboard.nextLine());
-        
-        System.out.print("내용? ");
-        board.contents = keyboard.nextLine();
-        
-        board.createdDate = new Date(System.currentTimeMillis()); 
-        
-        board.viewCount = 0;
-        
-        boards[boardIdx] = board;
-        boardIdx++;
-        
-        System.out.println("저장하였습니다.");
+        addBoard();
         
       } else if (command.equals("/board/list")) {
-        for (int j = 0; j < boardIdx; j++) {
-          System.out.printf("%3d, %-20s, %s, %d\n", 
-              boards[j].no, boards[j].contents, boards[j].createdDate, boards[j].viewCount);
-        }
+        listBoard();
         
       } else if (command.equals("quit")) {
         System.out.println("안녕!");
@@ -70,6 +52,32 @@ public class App {
     }
 
     keyboard.close();
+  }
+
+  private static void listBoard() {
+    for (int j = 0; j < boardIdx; j++) {
+      System.out.printf("%3d, %-20s, %s, %d\n", 
+          boards[j].no, boards[j].contents, boards[j].createdDate, boards[j].viewCount);
+    }
+  }
+
+  private static void addBoard() {
+    Board board = new Board();
+    
+    System.out.print("번호? ");
+    board.no = Integer.parseInt(keyboard.nextLine());
+    
+    System.out.print("내용? ");
+    board.contents = keyboard.nextLine();
+    
+    board.createdDate = new Date(System.currentTimeMillis()); 
+    
+    board.viewCount = 0;
+    
+    boards[boardIdx] = board;
+    boardIdx++;
+    
+    System.out.println("저장하였습니다.");
   }
 
   private static void listMember() {

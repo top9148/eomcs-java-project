@@ -8,7 +8,11 @@
 
 ### 과제 1: 한 개의 수업 내용을 출력하라.
 
-`App` 클래스를 실행하면 다음 결과를 출력한다.
+- App.java
+    - main()을 제외한 다른 메서드는 삭제한다.
+    - main()에 코드를 작성한다.
+- AppTest.java
+    - 자동 생성된 클래스는 삭제한다.
 
 실행 결과
 
@@ -24,7 +28,8 @@
 
 ### 과제 2: 한 명의 회원 정보를 출력하라.
 
-`App2` 클래스를 실행하면 다음 결과를 출력한다.
+- App2.java
+    - main()에 코드를 작성한다.
 
 실행 결과
 
@@ -40,7 +45,8 @@
 
 ### 과제 3: 한 개의 게시글을 출력하라.
 
-`App3` 클래스를 실행하면 다음 결과를 출력한다.
+- App3.java
+    - main()에 코드를 작성한다.
 
 실행 결과
 
@@ -52,23 +58,9 @@
 ```
 
 
-## 실습
-
-### 관련 소스 
+## 실습 소스
 
 - src/main/java/App.java 변경
 - src/main/java/App2.java 추가
 - src/main/java/App3.java 추가
 - src/test/java/AppTest.java 삭제
-
-### 작업
-
-- App.java
-    - getGreeting() 삭제한다.
-    - main() 변경한다.  
-- App2.java
-    - main() 작성한다.  
-- App3.java
-    - main() 작성한다.  
-- AppTest.java 
-    - `그레이들`이 자동 생성한 단위 테스트 관련 파일이다. 삭제한다. 
