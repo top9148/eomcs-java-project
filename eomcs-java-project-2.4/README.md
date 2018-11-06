@@ -1,6 +1,6 @@
 # eomcs-java-project-2.4
 
-인스턴스 연산자를 만드는 방법
+인스턴스 연산자와 메서드
 
 - 메서드를 활용하여 인스턴스 값을 다루는 연산자를 정의하는 방법
 - 캡슐화와 셋터/겟터의 의미
@@ -45,9 +45,9 @@
 
 ## 실습 소스
 
-- src/main/java/com/eomcs/lms/handler/Lesson.java 변경
-- src/main/java/com/eomcs/lms/handler/Member.java 변경
-- src/main/java/com/eomcs/lms/handler/Board.java 변경
+- src/main/java/com/eomcs/lms/domain/Lesson.java 변경
+- src/main/java/com/eomcs/lms/domain/Member.java 변경
+- src/main/java/com/eomcs/lms/domain/Board.java 변경
 - src/main/java/com/eomcs/lms/handler/LessonHandler.java 변경
 - src/main/java/com/eomcs/lms/handler/MemberHandler.java 변경
 - src/main/java/com/eomcs/lms/handler/BoardHandler.java 변경
