@@ -144,7 +144,7 @@
 
 - 수업/회원/게시판에 대해 CRUD 완성하기
 
-### 2.9 - Linked List 자료구조와 중첩 클래스 활용하기
+### 2.9 - ArrayList 대신 Linked List 자료구조 사용하기
 
 - Linked List 자료구조로 데이터를 다루는 방법
 - 중첩 클래스의 활용
