@@ -1,4 +1,4 @@
-# eomcs-java-project-2.9
+# eomcs-java-project-3.0
 
 Stack 자료구조 구현과 활용
 
@@ -17,12 +17,13 @@ Stack 자료구조 구현과 활용
     - 제네릭을 적용한다.
     - 객체 복제가 가능하도록 Cloneable 인터페이스를 구현한다.
 
-### 과제 2: Stack 으로 사용자가 입력한 명령어 내역을 보관하라.
+### 과제 2: 사용자가 입력한 명령어를 Stack에 보관하라.
 
 - App.java
-    - Stack에 사용자가 입력한 명령어를 보관한다.
+    - 사용자가 입력한 명령어를 Stack에 보관한다.
+    - 최대 10개만 보관한다.
 
-### 과제 3: `history` 명령에 대해 사용자가 입력한 명령을 최신순으로 출력하라.
+### 과제 3: 사용자가 입력한 명령을 최신순으로 출력하는 `history` 명령을 추가하라.
 
 - App.java
     - 명령어 내역을 출력하는 printCommandHistory()를 정의한다.
@@ -54,7 +55,5 @@ Stack 자료구조 구현과 활용
 
 ## 실습 소스
 
-- src/main/java/com/eomcs/util/LinkedList.java 추가
-- src/main/java/com/eomcs/lms/handler/LessonHandler.java 변경
-- src/main/java/com/eomcs/lms/handler/MemberHandler.java 변경
-- src/main/java/com/eomcs/lms/handler/BoardHandler.java 변경
+- src/main/java/com/eomcs/util/Stack.java 추가
+- src/main/java/com/eomcs/lms/App.java 변경

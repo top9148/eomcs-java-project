@@ -3,13 +3,15 @@ import java.util.Scanner;
 import com.eomcs.lms.handler.BoardHandler;
 import com.eomcs.lms.handler.LessonHandler;
 import com.eomcs.lms.handler.MemberHandler;
+import com.eomcs.util.Queue;
 import com.eomcs.util.Stack;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
   static Stack<String> commandHistory = new Stack<>(11);
-
+  static Queue<String> commandHistory2 = new Queue<>(10);
+  
   public static void main(String[] args) {
     LessonHandler lessonHandler = new LessonHandler(keyboard);
     MemberHandler memberHandler = new MemberHandler(keyboard);
@@ -21,6 +23,9 @@ public class App {
 
       // 사용자가 입력한 명령을 스택에 보관한다.
       commandHistory.push(command);
+      
+      // 사용자가 입력한 명령을 큐에 보관한다.
+      commandHistory2.offer(command);
       
       if (command.equals("/lesson/add")) {
         lessonHandler.addLesson();
@@ -89,6 +94,9 @@ public class App {
       } else if (command.equals("history")) {
         printCommandHistory();
         
+      } else if (command.equals("history2")) {
+        printCommandHistory2();
+        
       } else {
         System.out.println("실행할 수 없는 명령입니다.");
       }
@@ -107,6 +115,14 @@ public class App {
     
     while (temp.size() > 0) {
       System.out.println(temp.pop());
+    }
+  }
+  
+  private static void printCommandHistory2() {
+    Queue<String> temp = commandHistory2.clone();
+    
+    while (temp.size() > 0) {
+      System.out.println(temp.poll());
     }
   }
 

@@ -2,33 +2,35 @@ package com.eomcs.util;
 
 import java.util.Vector;
 
-public class Stack<E> extends Vector<E> implements Cloneable {
+public class Queue<E> extends Vector<E> implements Cloneable {
   private static final long serialVersionUID = 1L;
 
   private int maxSize;
   
-  public Stack() {
+  public Queue() {
     maxSize = 100;
   }
   
-  public Stack(int maxSize) {
+  public Queue(int maxSize) {
     this.maxSize = maxSize;
   }
   
   @SuppressWarnings("unchecked")
   @Override
-  public synchronized Stack<E> clone() {
-    return (Stack<E>) super.clone();
+  public synchronized Queue<E> clone() {
+    return (Queue<E>) super.clone();
   }
   
-  public void push(E value) {
+  public void offer(E value) {
     if (size() == maxSize)
-      remove(0);
+      remove(0); // 꽉차면 맨 앞에 입력된 값을 제거한다.
     add(value);
   }
   
-  public E pop() {
-    return remove(size() - 1);
+  public E poll() {
+    if (size() > 0)
+      return remove(0);
+    return null;
   }
   
   /*
