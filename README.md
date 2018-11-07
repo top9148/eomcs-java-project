@@ -146,5 +146,15 @@
 
 ### 2.9 - ArrayList 대신 Linked List 자료구조 사용하기
 
-- Linked List 자료구조로 데이터를 다루는 방법
+- Linked List 자료구조를 구현하는 방법
+- Linked List 의 구동원리 이해하기
+- ArrayList와 LinkedList의 장단점 비교하기
 - 중첩 클래스의 활용
+
+### 3.0 - Queue 자료구조 구현과 활용
+
+- Queue 자료구조를 구현하는 방법
+- Queue 의 구동원리 이해하기
+- Queue 의 활용 사례
+
+
