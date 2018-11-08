@@ -41,13 +41,13 @@ public class App {
   static Queue<String> commandHistory2 = new LinkedList<>();
   static ArrayList<Lesson> lessonList = new ArrayList<>();
   static LinkedList<Member> memberList = new LinkedList<>();
+  static ArrayList<Board> boardList = new ArrayList<>();
   
   public static void main(String[] args) {
     
     loadLessonData();
     loadMemberData();
-    
-    ArrayList<Board> boardList = new ArrayList<>();
+    loadBoardData();
 
     Map<String,Command> commandMap = new HashMap<>();
     commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonList));
@@ -107,6 +107,7 @@ public class App {
     
     saveLessonData();
     saveMemberData();
+    saveBoardData();
   }
 
   @SuppressWarnings("unchecked")
@@ -177,7 +178,7 @@ public class App {
         BufferedWriter out1 = new BufferedWriter(out0);
         PrintWriter out = new PrintWriter(out1);) {
       
-      // 출력 형식: 번호,수업명,설명,시작일,종료일,총수업시간,일수업시간
+      // 파일 형식: 번호,수업명,설명,시작일,종료일,총수업시간,일수업시간
       for (Lesson l : lessonList) {
         out.printf("%d,%s,%s,%s,%s,%d,%d\n", 
             l.getNo(), l.getTitle(), l.getContents(),
@@ -235,7 +236,7 @@ public class App {
         BufferedWriter out1 = new BufferedWriter(out0);
         PrintWriter out = new PrintWriter(out1);) {
       
-      // 출력 형식: 번호,이름,이메일,암호,사진,전화,가입일
+      // 파일 형식: 번호,이름,이메일,암호,사진,전화,가입일
       for (Member m : memberList) {
         out.printf("%d,%s,%s,%s,%s,%s,%s\n", 
             m.getNo(), m.getName(), m.getEmail(), m.getPassword(), m.getPhoto(),
@@ -244,6 +245,59 @@ public class App {
       
     } catch (Exception e) {
       System.out.println("회원 데이터를 쓰는 중 오류 발생: " + e.toString());
+    }
+  }
+  
+  private static void loadBoardData() {
+    FileReader in0 = null;
+    BufferedReader in = null;
+    
+    try {
+      
+      File file = new File("board.csv");
+      if (!file.exists()) {
+        file.createNewFile();
+      }
+      
+      in0 = new FileReader(file);
+      in = new BufferedReader(in0);
+      
+      String line = null; // 형식: 번호,내용,등록일,조회수
+      
+      while ((line = in.readLine()) != null) {
+        String[] values = line.split(",");
+        
+        Board board = new Board();
+        board.setNo(Integer.parseInt(values[0]));
+        board.setContents(values[1]);
+        board.setCreatedDate(Date.valueOf(values[2]));
+        board.setViewCount(Integer.parseInt(values[3]));
+        
+        boardList.add(board);
+      }
+      
+    } catch (Exception e) {
+      System.out.println("게시글 데이터를 읽는 중 오류 발생: " + e.toString());
+      
+    } finally {
+      try {in.close();} catch (IOException e) {}
+      try {in0.close();} catch (IOException e) {}
+    }
+  }
+  
+  private static void saveBoardData() {
+    try (FileWriter out0 = new FileWriter("board.csv");
+        BufferedWriter out1 = new BufferedWriter(out0);
+        PrintWriter out = new PrintWriter(out1);) {
+      
+      // 파일 형식: 번호,내용,등록일,조회수
+      for (Board b : boardList) {
+        out.printf("%d,%s,%s,%d\n", 
+            b.getNo(), b.getContents(), b.getCreatedDate(), b.getViewCount());
+      }
+      
+    } catch (Exception e) {
+      System.out.println("게시글 데이터를 쓰는 중 오류 발생: " + e.toString());
     }
   }
 }
