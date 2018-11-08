@@ -6,8 +6,6 @@ import com.eomcs.util.ArrayList;
 
 public class BoardHandler {
   
-  static final int LENGTH = 10;
-  
   Scanner keyboard;
   ArrayList<Board> list;
   

@@ -9,7 +9,7 @@ import com.eomcs.util.Stack;
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
-  static Stack<String> commandHistory = new Stack<>(11);
+  static Stack<String> commandHistory = new Stack<>(10);
   static Queue<String> commandHistory2 = new Queue<>(10);
   
   public static void main(String[] args) {
@@ -109,9 +109,6 @@ public class App {
 
   private static void printCommandHistory() {
     Stack<String> temp = commandHistory.clone();
-    
-    // 이 명령을 실행하기 위해 마지막에 입력한 history는 출력에서 제외한다.
-    temp.pop();
     
     while (temp.size() > 0) {
       System.out.println(temp.pop());

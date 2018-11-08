@@ -113,9 +113,6 @@ public class App {
   private static void printCommandHistory() {
     Stack<String> temp = (Stack<String>) commandHistory.clone();
     
-    // 이 명령을 실행하기 위해 마지막에 입력한 history는 출력에서 제외한다.
-    temp.pop();
-    
     while (temp.size() > 0) {
       System.out.println(temp.pop());
     }

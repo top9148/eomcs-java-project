@@ -13,7 +13,7 @@ Queue 자료구조 구현과 활용
 ### 과제 1: Queue 자료구조를 구현하라.
 
 - Queue.java 
-    - java.util.Vector를 상속 받아 Queue 자료 구조를 구현한다.
+    - 이전에 만든 `LinkedList` 를 상속 받아 Queue 자료 구조를 구현한다.
     - 제네릭을 적용한다.
     - 객체 복제가 가능하도록 Cloneable 인터페이스를 구현한다.
 

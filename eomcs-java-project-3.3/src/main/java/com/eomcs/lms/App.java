@@ -1,18 +1,19 @@
 package com.eomcs.lms;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Stack;
 import com.eomcs.lms.handler.BoardHandler;
 import com.eomcs.lms.handler.LessonHandler;
 import com.eomcs.lms.handler.MemberHandler;
+import com.eomcs.util.ArrayList;
+import com.eomcs.util.Iterator;
+import com.eomcs.util.LinkedList;
+import com.eomcs.util.Queue;
+import com.eomcs.util.Stack;
 
 public class App {
 
   static Scanner keyboard = new Scanner(System.in);
-  static Stack<String> commandHistory = new Stack<>();
-  static Queue<String> commandHistory2 = new LinkedList<>();
+  static Stack<String> commandHistory = new Stack<>(10);
+  static Queue<String> commandHistory2 = new Queue<>(10);
   
   public static void main(String[] args) {
     LessonHandler lessonHandler = new LessonHandler(keyboard, new ArrayList<>());
@@ -109,24 +110,19 @@ public class App {
     keyboard.close();
   }
 
-  @SuppressWarnings("unchecked")
   private static void printCommandHistory() {
-    Stack<String> temp = (Stack<String>) commandHistory.clone();
+    Iterator<String> iterator = commandHistory.iterator();
     
-    // 이 명령을 실행하기 위해 마지막에 입력한 history는 출력에서 제외한다.
-    temp.pop();
-    
-    while (temp.size() > 0) {
-      System.out.println(temp.pop());
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
     }
   }
   
-  @SuppressWarnings("unchecked")
   private static void printCommandHistory2() {
-    Queue<String> temp = (Queue<String>) ((LinkedList<String>) commandHistory2).clone();
+    Iterator<String> iterator = commandHistory2.iterator();
     
-    while (temp.size() > 0) {
-      System.out.println(temp.poll());
+    while (iterator.hasNext()) {
+      System.out.println(iterator.next());
     }
   }
 

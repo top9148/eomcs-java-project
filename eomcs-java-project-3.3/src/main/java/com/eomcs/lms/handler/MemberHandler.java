@@ -1,13 +1,11 @@
 package com.eomcs.lms.handler;
 import java.sql.Date;
-import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.util.List;
 
 public class MemberHandler {
   
-  static final int LENGTH = 10;
-
   Scanner keyboard;
   List<Member> list;
   

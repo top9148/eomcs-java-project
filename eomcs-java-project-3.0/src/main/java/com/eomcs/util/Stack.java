@@ -1,9 +1,6 @@
 package com.eomcs.util;
 
-import java.util.Vector;
-
-public class Stack<E> extends Vector<E> implements Cloneable {
-  private static final long serialVersionUID = 1L;
+public class Stack<E> extends LinkedList<E> implements Cloneable {
 
   private int maxSize;
   
@@ -15,10 +12,13 @@ public class Stack<E> extends Vector<E> implements Cloneable {
     this.maxSize = maxSize;
   }
   
-  @SuppressWarnings("unchecked")
   @Override
-  public synchronized Stack<E> clone() {
-    return (Stack<E>) super.clone();
+  public Stack<E> clone() {
+    Stack<E> temp = new Stack<>();
+    for (int i = 0; i < size(); i++) {
+      temp.add(get(i));
+    }
+    return (Stack<E>) temp;
   }
   
   public void push(E value) {

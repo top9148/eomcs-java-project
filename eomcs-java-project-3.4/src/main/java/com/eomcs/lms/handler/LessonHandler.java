@@ -6,8 +6,6 @@ import com.eomcs.lms.domain.Lesson;
 
 public class LessonHandler {
 
-  static final int LENGTH = 10;
-
   Scanner keyboard;
   List<Lesson> list;
 

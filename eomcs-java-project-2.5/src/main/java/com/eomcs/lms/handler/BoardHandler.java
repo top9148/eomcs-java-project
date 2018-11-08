@@ -5,8 +5,6 @@ import com.eomcs.lms.domain.Board;
 
 public class BoardHandler {
   
-  static final int LENGTH = 10;
-  
   Scanner keyboard;
   BoardList list;
   

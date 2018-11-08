@@ -6,8 +6,6 @@ import com.eomcs.util.ArrayList;
 
 public class MemberHandler {
   
-  static final int LENGTH = 10;
-
   Scanner keyboard;
   ArrayList<Member> list;
   

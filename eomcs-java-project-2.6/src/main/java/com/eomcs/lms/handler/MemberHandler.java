@@ -5,8 +5,6 @@ import com.eomcs.lms.domain.Member;
 
 public class MemberHandler {
   
-  static final int LENGTH = 10;
-
   Scanner keyboard;
   ArrayList list;
   

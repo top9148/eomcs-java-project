@@ -1,22 +1,23 @@
 # eomcs-java-project-3.3
 
-자바 컬렉션 API 사용하기
+`Iterator` 디자인 패턴의 활용
 
-- 자바에서 제공하는 자료구조 구현체를 활용하는 방법
+- 목록을 다루는 자료구조와 상관없이 일관된 방법으로 데이터를 꺼내는 방법
+- `Iterator` 디자인 패턴의 용도와 이점을 이해하기
 
   
 ## 프로젝트 - 수업관리 시스템  
 
-### 과제 1: ArrayList, LinkedList, Stack, Queue를 자바 컬렉션 API로 교체하라.
+### 과제 1: Stack 이나 Queue 에서 값을 꺼내는 방법을 통일하라.
 
-- LessonHandler.java
-    - `List` 를 `java.util.List` 인터페이스로 교체한다.
-- MemberHandler.java
-    - `List` 를 `java.util.List` 인터페이스로 교체한다.
-- BoardHandler.java
-    - `List` 를 `java.util.List` 인터페이스로 교체한다.
+- Iterator.java
+    - 인터페이스로 값을 꺼내는 규칙을 정의한다.
+- Stack.java
+    - `Iterator` 인터페이스의 구현체를 리턴하는 iterator() 를 정의한다.
+- Queue.java
+    - `Iterator` 인터페이스의 구현체를 리턴하는 iterator() 를 정의한다.
 - App.java
-    - 핸들러를 생성할 때 자바 컬렉션 API에서 제공하는 `java.util.List`의 구현체를 넘겨준다.
+    - `history`, `history2` 명령을 처리할 때 Stack, Queue 객체에서 직접 값을 꺼내지 않고 Iterator 구현체를 통해서 꺼낸다.
 
 #### 실행 결과
 
@@ -24,12 +25,7 @@
 
 ## 실습 소스
 
-- src/main/java/com/eomcs/util/List.java 삭제
-- src/main/java/com/eomcs/util/ArrayList.java 삭제
-- src/main/java/com/eomcs/util/LinkedList.java 삭제
-- src/main/java/com/eomcs/util/Stack.java 삭제
-- src/main/java/com/eomcs/util/Queue.java 삭제
-- src/main/java/com/eomcs/lms/handler/LessonHandler.java 변경
-- src/main/java/com/eomcs/lms/handler/MemberHandler.java 변경
-- src/main/java/com/eomcs/lms/handler/BoardHandler.java 변경
+- src/main/java/com/eomcs/util/Iterator.java 추가
+- src/main/java/com/eomcs/util/Stack.java 변경
+- src/main/java/com/eomcs/util/Queue.java 변경
 - src/main/java/com/eomcs/lms/App.java 변경

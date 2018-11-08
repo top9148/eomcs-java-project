@@ -1,9 +1,6 @@
 package com.eomcs.util;
 
-import java.util.Vector;
-
-public class Queue<E> extends Vector<E> implements Cloneable {
-  private static final long serialVersionUID = 1L;
+public class Queue<E> extends LinkedList<E> implements Cloneable {
 
   private int maxSize;
   
@@ -15,10 +12,13 @@ public class Queue<E> extends Vector<E> implements Cloneable {
     this.maxSize = maxSize;
   }
   
-  @SuppressWarnings("unchecked")
   @Override
-  public synchronized Queue<E> clone() {
-    return (Queue<E>) super.clone();
+  public Queue<E> clone() {
+    Queue<E> temp = new Queue<>();
+    for (int i = 0; i < size(); i++) {
+      temp.add(get(i));
+    }
+    return (Queue<E>) temp;
   }
   
   public void offer(E value) {
