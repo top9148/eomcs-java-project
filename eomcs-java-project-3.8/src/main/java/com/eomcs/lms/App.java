@@ -1,10 +1,11 @@
 package com.eomcs.lms;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -133,32 +134,32 @@ public class App {
   }
   
   private static void loadLessonData() {
-    FileReader in0 = null;
-    BufferedReader in = null;
+    DataInputStream in = null;
     
     try {
       
-      File file = new File("lesson.csv");
+      File file = new File("lesson.bin");
       if (!file.exists()) {
         file.createNewFile();
+        return;
       }
       
-      in0 = new FileReader(file);
-      in = new BufferedReader(in0);
+      in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
       
-      String line = null; // 형식: 번호,수업명,설명,시작일,종료일,총수업시간,일수업시간
+      // 파일의 첫 번째 데이터가 저장된 데이터의 개수(int)이다.
+      int length = in.readInt();
       
-      while ((line = in.readLine()) != null) {
-        String[] values = line.split(",");
-        
+      for (int i = 0; i < length; i++) {
+        // 데이터 읽기 순서: 
+        // 번호(int),수업명(String),설명(String),시작일(String),종료일(String),총수업시간(int),일수업시간(int)
         Lesson lesson = new Lesson();
-        lesson.setNo(Integer.parseInt(values[0]));
-        lesson.setTitle(values[1]);
-        lesson.setContents(values[2]);
-        lesson.setStartDate(Date.valueOf(values[3]));
-        lesson.setEndDate(Date.valueOf(values[4]));
-        lesson.setTotalHours(Integer.parseInt(values[5]));
-        lesson.setDayHours(Integer.parseInt(values[5]));
+        lesson.setNo(in.readInt());
+        lesson.setTitle(in.readUTF());
+        lesson.setContents(in.readUTF());
+        lesson.setStartDate(Date.valueOf(in.readUTF()));
+        lesson.setEndDate(Date.valueOf(in.readUTF()));
+        lesson.setTotalHours(in.readInt());
+        lesson.setDayHours(in.readInt());
         
         lessonList.add(lesson);
       }
@@ -168,21 +169,26 @@ public class App {
       
     } finally {
       try {in.close();} catch (Exception e) {}
-      try {in0.close();} catch (Exception e) {}
     }
   }
   
   private static void saveLessonData() {
-    try (FileWriter out0 = new FileWriter("lesson.csv");
-        BufferedWriter out1 = new BufferedWriter(out0);
-        PrintWriter out = new PrintWriter(out1);) {
+    try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
+        new FileOutputStream("lesson.bin")))) {
       
-      // 파일 형식: 번호,수업명,설명,시작일,종료일,총수업시간,일수업시간
+      // 첫 번째로 데이터의 개수(int)를 먼저 출력한다.
+      out.writeInt(lessonList.size());
+      
       for (Lesson l : lessonList) {
-        out.printf("%d,%s,%s,%s,%s,%d,%d\n", 
-            l.getNo(), l.getTitle(), l.getContents(),
-            l.getStartDate(), l.getEndDate(),
-            l.getTotalHours(), l.getDayHours());
+        // 데이터 쓰기 순서: 
+        // 번호(int),수업명(String),설명(String),시작일(String),종료일(String),총수업시간(int),일수업시간(int)
+        out.writeInt(l.getNo());
+        out.writeUTF(l.getTitle());
+        out.writeUTF(l.getContents());
+        out.writeUTF(l.getStartDate().toString());
+        out.writeUTF(l.getEndDate().toString());
+        out.writeInt(l.getTotalHours());
+        out.writeInt(l.getDayHours());
       }
       
     } catch (Exception e) {
@@ -191,32 +197,33 @@ public class App {
   }
   
   private static void loadMemberData() {
-    FileReader in0 = null;
-    BufferedReader in = null;
+    DataInputStream in = null;
     
     try {
       
-      File file = new File("member.csv");
+      File file = new File("member.bin");
       if (!file.exists()) {
         file.createNewFile();
+        return;
       }
       
-      in0 = new FileReader(file);
-      in = new BufferedReader(in0);
+      in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
       
-      String line = null; // 형식: 번호,이름,이메일,암호,사진,전화,가입일
+      // 파일의 첫 번째 데이터가 저장된 데이터의 개수(int)이다.
+      int length = in.readInt();
       
-      while ((line = in.readLine()) != null) {
-        String[] values = line.split(",");
+      for (int i = 0; i < length; i++) {
+        // 데이터 읽기 순서: 
+        // 번호(int),이름(String),이메일(String),암호(String),사진(String),전화(String),가입일(String)
         
         Member member = new Member();
-        member.setNo(Integer.parseInt(values[0]));
-        member.setName(values[1]);
-        member.setEmail(values[2]);
-        member.setPassword(values[3]);
-        member.setPhoto(values[4]);
-        member.setTel(values[5]);
-        member.setRegisteredDate(Date.valueOf(values[6]));
+        member.setNo(in.readInt());
+        member.setName(in.readUTF());
+        member.setEmail(in.readUTF());
+        member.setPassword(in.readUTF());
+        member.setPhoto(in.readUTF());
+        member.setTel(in.readUTF());
+        member.setRegisteredDate(Date.valueOf(in.readUTF()));
         
         memberList.add(member);
       }
@@ -226,20 +233,26 @@ public class App {
       
     } finally {
       try {in.close();} catch (Exception e) {}
-      try {in0.close();} catch (Exception e) {}
     }
   }
   
   private static void saveMemberData() {
-    try (FileWriter out0 = new FileWriter("member.csv");
-        BufferedWriter out1 = new BufferedWriter(out0);
-        PrintWriter out = new PrintWriter(out1);) {
+    try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
+        new FileOutputStream("member.bin")))) {
       
-      // 파일 형식: 번호,이름,이메일,암호,사진,전화,가입일
+      // 첫 번째로 데이터의 개수(int)를 먼저 출력 한다.
+      out.writeInt(memberList.size());
+
       for (Member m : memberList) {
-        out.printf("%d,%s,%s,%s,%s,%s,%s\n", 
-            m.getNo(), m.getName(), m.getEmail(), m.getPassword(), m.getPhoto(),
-            m.getTel(), m.getRegisteredDate());
+        // 데이터 읽기 순서: 
+        // 번호(int),이름(String),이메일(String),암호(String),사진(String),전화(String),가입일(String)
+        out.writeInt(m.getNo());
+        out.writeUTF(m.getName());
+        out.writeUTF(m.getEmail());
+        out.writeUTF(m.getPassword());
+        out.writeUTF(m.getPhoto());
+        out.writeUTF(m.getTel());
+        out.writeUTF(m.getRegisteredDate().toString());
       }
       
     } catch (Exception e) {
@@ -248,29 +261,30 @@ public class App {
   }
   
   private static void loadBoardData() {
-    FileReader in0 = null;
-    BufferedReader in = null;
+    DataInputStream in = null;
     
     try {
       
-      File file = new File("board.csv");
+      File file = new File("board.bin");
       if (!file.exists()) {
         file.createNewFile();
+        return;
       }
       
-      in0 = new FileReader(file);
-      in = new BufferedReader(in0);
+      in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
       
-      String line = null; // 형식: 번호,내용,등록일,조회수
+      // 파일의 첫 번째 데이터가 저장된 데이터의 개수(int)이다.
+      int length = in.readInt();
       
-      while ((line = in.readLine()) != null) {
-        String[] values = line.split(",");
-        
+      for (int i = 0; i < length; i++) {
+        // 데이터 읽기 순서:
+        // 번호(int),내용(String),등록일(String),조회수(int)
+
         Board board = new Board();
-        board.setNo(Integer.parseInt(values[0]));
-        board.setContents(values[1]);
-        board.setCreatedDate(Date.valueOf(values[2]));
-        board.setViewCount(Integer.parseInt(values[3]));
+        board.setNo(in.readInt());
+        board.setContents(in.readUTF());
+        board.setCreatedDate(Date.valueOf(in.readUTF()));
+        board.setViewCount(in.readInt());
         
         boardList.add(board);
       }
@@ -280,19 +294,24 @@ public class App {
       
     } finally {
       try {in.close();} catch (Exception e) {}
-      try {in0.close();} catch (Exception e) {}
     }
   }
   
   private static void saveBoardData() {
-    try (FileWriter out0 = new FileWriter("board.csv");
-        BufferedWriter out1 = new BufferedWriter(out0);
-        PrintWriter out = new PrintWriter(out1);) {
+    try (DataOutputStream out = new DataOutputStream(new BufferedOutputStream(
+        new FileOutputStream("board.bin")))) {
       
-      // 파일 형식: 번호,내용,등록일,조회수
+      // 첫 번째로 데이터의 개수(int)를 먼저 출력 한다.
+      out.writeInt(boardList.size());
+      
       for (Board b : boardList) {
-        out.printf("%d,%s,%s,%d\n", 
-            b.getNo(), b.getContents(), b.getCreatedDate(), b.getViewCount());
+        // 데이터 읽기 순서:
+        // 번호(int),내용(String),등록일(String),조회수(int)
+       
+        out.writeInt(b.getNo());
+        out.writeUTF(b.getContents());
+        out.writeUTF(b.getCreatedDate().toString());
+        out.writeInt(b.getViewCount());
       }
       
     } catch (Exception e) {
