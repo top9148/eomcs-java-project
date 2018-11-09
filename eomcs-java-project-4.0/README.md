@@ -65,6 +65,10 @@
     - `Map` 객체를 통해 `Observer`와 `App` 사이에서 값을 공유한다.
     - `DataLoaderListener`가 준비한 컬렉션 객체를 핸들러에 넘긴다.
 
+#### 실행 결과
+
+이제 `App`의 실행 결과는 이전 버전과 같다. 애플리케이션을 실행하면 정상적으로 파일에서 데이터를 읽어오고, 종료하면 파일로 데이터를 출력할 것이다.
+
 ## 실습 소스
 
 - src/main/java/com/eomcs/context/ApplicationContextListener.java 추가
