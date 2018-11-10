@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import com.eomcs.context.ApplicationContextListener;
 import com.eomcs.lms.domain.Board;
 import com.eomcs.lms.domain.Lesson;
@@ -40,6 +42,9 @@ public class ServerApp {
  
   // 명령를 처리할 서블릿을 저장하는 보관소
   Map<String,Servlet> servletMap = new HashMap<>();
+  
+  // 스레드 풀
+  ExecutorService executorService = Executors.newCachedThreadPool();
   
   static final int DEFAULT_PORT = 8888;
   
@@ -89,19 +94,12 @@ public class ServerApp {
     
     while (true) {
       try {
-        /*
-        Socket socket = serverSocket.accept();
-        RequestHandler requestHandler = new RequestHandler(socket);
-        Thread t = new Thread(requestHandler);
-        t.start();
-        */
-        new Thread(new RequestHandler(serverSocket.accept())).start();
+        executorService.submit(new RequestHandler(serverSocket.accept()));
         
       } catch (Exception e) {
         System.out.println("클라이언트와의 연결 실패!");
       }
     }
-    
   }
   
   private void shutdown() {
@@ -109,9 +107,11 @@ public class ServerApp {
     for (ApplicationContextListener listener : applicationContextListeners) {
       listener.contextDestroyed(context);
     }
+    executorService.shutdown();
+    
     System.exit(0);
   }
-  
+
   // Observer를 등록하는 메서드
   private void addApplicationContextListener(ApplicationContextListener listener) {
     applicationContextListeners.add(listener);
@@ -143,7 +143,8 @@ public class ServerApp {
           PrintWriter out = new PrintWriter(new BufferedOutputStream(s.getOutputStream()));
           BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()))) {
         
-        System.out.println("클라이언트와 연결됨!");
+        // 현재 이 요청을 처리하는 스레드 이름을 함께 출력!
+        System.out.printf("클라이언트와 연결됨! - %s\n", Thread.currentThread().getName());
         
         // 클라이언트가 보낸 데이터를 읽는다.
         String command = in.readLine();
@@ -193,6 +194,12 @@ public class ServerApp {
         
         out.println();
         out.flush(); // 버퍼에 임시 보관된 출력물을 서버로 보낸다.
+        
+        // 스레드풀에 재사용할 스레드가 없으면 새 스레드를 생성하여 실행한다.
+        // => 다음 주석을 풀면 스레드를 종료를 5초 늦추게 된다.
+        // => 클라이언트에서 또 명령을 보내면 스레드풀에 재사용할 스레드가 없기 때문에 새 스레드가 생성될 것이다.
+        //    스레드 이름을 확인하면 된다.
+        Thread.sleep(5000);
         
       } catch (Exception e) {
         System.out.println("서버 통신 오류!");
