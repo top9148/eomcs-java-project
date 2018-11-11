@@ -1,43 +1,45 @@
 package com.eomcs.lms.servlet;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Member;
 
 public class MemberDetailServlet implements Servlet {
   
-  List<Member> list;
-  
-  public MemberDetailServlet(List<Member> list) {
-    this.list = list;
+  Connection connection;
+
+  public MemberDetailServlet(Connection connection) {
+    this.connection = connection;
   }
-  
+
   @Override
   public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
+    // 명령 예) /member/detail?no=3
     int no = Integer.parseInt(paramMap.get("no"));
 
-    int index = indexOfMember(no);
-    if (index == -1) {
-      out.println("해당 회원을 찾을 수 없습니다.");
-      return;
+    Statement stmt = null;
+    ResultSet rs = null; 
+    
+    try {
+      stmt = connection.createStatement();
+      rs = stmt.executeQuery("SELECT MNO,NAME,EMAIL,PWD,PHOTO,TEL,CDT FROM MEMBER"
+          + " WHERE MNO=" + no);
+      if (rs.next()) {
+        out.printf("이름: %s\n", rs.getString("NAME"));
+        out.printf("이메일: %s\n", rs.getString("EMAIL"));
+        out.printf("암호: %s\n", rs.getString("PWD"));
+        out.printf("사진: %s\n", rs.getString("PHOTO"));
+        out.printf("전화: %s\n", rs.getString("TEL"));
+        out.printf("가입일: %s\n", rs.getDate("CDT"));
+      } else {
+        out.println("해당 회원을 찾을 수 없습니다.");
+      }
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      try {rs.close();} catch (Exception ex) {}
+      try {stmt.close();} catch (Exception ex) {}
     }
-
-    Member member = list.get(index);
-
-    out.printf("이름: %s\n", member.getName());
-    out.printf("이메일: %s\n", member.getEmail());
-    out.printf("암호: %s\n", member.getPassword());
-    out.printf("사진: %s\n", member.getPhoto());
-    out.printf("전화: %s\n", member.getTel());
-    out.printf("가입일: %s\n", member.getRegisteredDate());
-  }
-
-  private int indexOfMember(int no) {
-    for (int i = 0; i < list.size(); i++) {
-      Member m = list.get(i);
-      if (m.getNo() == no)
-        return i;
-    }
-    return -1;
   }
 }

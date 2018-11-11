@@ -13,6 +13,9 @@ tasks.withType(JavaCompile) {
 mainClassName = 'App'
 
 dependencies {
+    // MariaDB JDBC Driver
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+    
     compile 'com.google.guava:guava:23.0'
     testCompile 'junit:junit:4.12'
 }

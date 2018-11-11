@@ -1,69 +1,45 @@
 package com.eomcs.lms.servlet;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.Date;
-import java.util.List;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Lesson;
 
 public class LessonUpdateServlet implements Servlet {
 
-  List<Lesson> list;
+  Connection connection;
 
-  public LessonUpdateServlet(List<Lesson> list) {
-    this.list = list;
-  }
-
-  @Override
-  public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
-    int no = Integer.parseInt(paramMap.get("n"));
-
-    int index = indexOfLesson(no);
-    if (index == -1) {
-      out.println("해당 수업을 찾을 수 없습니다.");
-      return;
-    }
-    
-    Lesson lesson = list.get(index);
-    
-    try {
-      // 일단 기존 값을 복제한다.
-      Lesson temp = lesson.clone();
-      
-      String input = paramMap.get("t");
-      
-      if (input.length() > 0) 
-        temp.setTitle(input);
-      
-      if ((input = paramMap.get("c")) != null)
-        temp.setContents(input);
-      
-      if ((input = paramMap.get("sd")) != null)
-        temp.setStartDate(Date.valueOf(input));
-      
-      if ((input = paramMap.get("ed")) != null)
-        temp.setEndDate(Date.valueOf(input));
-      
-      if ((input = paramMap.get("th")) != null)
-        temp.setTotalHours(Integer.parseInt(input));
-      
-      if ((input = paramMap.get("dh")) != null)
-        temp.setDayHours(Integer.parseInt(input));
-      
-      list.set(index, temp);
-      
-      out.println("수업을 변경했습니다.");
-      
-    } catch (Exception e) {
-      out.println("변경 중 오류 발생!" + e.toString());
-    }
+  public LessonUpdateServlet(Connection connection) {
+    this.connection = connection;
   }
   
-  private int indexOfLesson(int no) {
-    for (int i = 0; i < list.size(); i++) {
-      Lesson l = list.get(i);
-      if (l.getNo() == no)
-        return i;
+  @Override
+  public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
+    // 명령 예) /lesson/update?no=6&title=자바 프로젝트&contents=프로젝트 강의입니다.&startDate=2019-1-1&endDate=2019-2-7&totalHours=80&dayHours=9&memberNo=1
+    int no = Integer.parseInt(paramMap.get("no"));
+
+    Statement stmt = null;
+    try { 
+      stmt = connection.createStatement();
+      int count = stmt.executeUpdate("UPDATE LESSON SET"
+          + " TITLE='" + paramMap.get("title") + "',"
+          + " CONT='" + paramMap.get("contents") + "',"
+          + " SDT='" + Date.valueOf(paramMap.get("startDate")) + "',"
+          + " EDT='" + Date.valueOf(paramMap.get("endDate")) + "',"
+          + " TOT_HR=" + Integer.parseInt(paramMap.get("totalHours")) + ","
+          + " DAY_HR=" + Integer.parseInt(paramMap.get("dayHours")) + "," 
+          + " MNO=" + Integer.parseInt(paramMap.get("memberNo"))
+          + " WHERE LNO=" + no);
+      
+      if (count > 0)
+        out.println("수업을 변경했습니다.");
+      else 
+        out.println("해당 수업을 찾을 수 없습니다.");
+      
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      try {stmt.close();} catch (Exception ex) {}
     }
-    return -1;
   }
 }

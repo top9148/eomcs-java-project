@@ -1,38 +1,36 @@
 package com.eomcs.lms.servlet;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Lesson;
 
 public class LessonDeleteServlet implements Servlet {
 
-  List<Lesson> list;
+  Connection connection;
 
-  public LessonDeleteServlet(List<Lesson> list) {
-    this.list = list;
+  public LessonDeleteServlet(Connection connection) {
+    this.connection = connection;
   }
 
   @Override
   public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
-    int no = Integer.parseInt(paramMap.get("n"));
+    // 명령 예) /lesson/delete?no=6
+    int no = Integer.parseInt(paramMap.get("no"));
 
-    int index = indexOfLesson(no);
-    if (index == -1) {
-      out.println("해당 수업을 찾을 수 없습니다.");
-      return;
+    Statement stmt = null;
+    try { 
+      stmt = connection.createStatement();
+      int count = stmt.executeUpdate("DELETE FROM LESSON WHERE LNO=" + no);
+      
+      if (count > 0)
+        out.println("수업을 삭제했습니다.");
+      else 
+        out.println("해당 수업을 찾을 수 없습니다.");
+      
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      try {stmt.close();} catch (Exception ex) {}
     }
-    
-    list.remove(index);
-    
-    out.println("수업을 삭제했습니다.");
-  }
-  
-  private int indexOfLesson(int no) {
-    for (int i = 0; i < list.size(); i++) {
-      Lesson l = list.get(i);
-      if (l.getNo() == no)
-        return i;
-    }
-    return -1;
   }
 }

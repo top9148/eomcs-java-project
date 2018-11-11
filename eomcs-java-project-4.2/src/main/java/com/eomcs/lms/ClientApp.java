@@ -82,7 +82,7 @@ public class ClientApp {
   
   private String prompt() {
     System.out.print("명령> ");
-    return keyboard.nextLine().toLowerCase();
+    return keyboard.nextLine();
   }
   
   public static void main(String[] args) throws Exception {

@@ -1,64 +1,42 @@
 package com.eomcs.lms.servlet;
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Member;
 
 public class MemberUpdateServlet implements Servlet {
   
-  List<Member> list;
-  
-  public MemberUpdateServlet(List<Member> list) {
-    this.list = list;
+  Connection connection;
+
+  public MemberUpdateServlet(Connection connection) {
+    this.connection = connection;
   }
   
   @Override
   public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
+    // 명령 예) /member/update?no=11&name=오호라2&email=ohora2@test.com&password=1111&photo=ohora2.jpeg&tel=1111-2222
     int no = Integer.parseInt(paramMap.get("no"));
 
-    int index = indexOfMember(no);
-    if (index == -1) {
-      out.println("해당 회원을 찾을 수 없습니다.");
-      return;
-    }
-    
-    Member member = list.get(index);
-    
-    try {
-      // 기존 값 복제
-      Member temp = member.clone();
+    Statement stmt = null;
+    try { 
+      stmt = connection.createStatement();
+      int count = stmt.executeUpdate("UPDATE MEMBER SET"
+          + " NAME='" + paramMap.get("name") + "',"
+          + " EMAIL='" + paramMap.get("email") + "',"
+          + " PWD='" + paramMap.get("password") + "',"
+          + " PHOTO='" + paramMap.get("photo") + "',"
+          + " TEL='" + paramMap.get("tel") + "'"
+          + " WHERE MNO=" + no);
       
-      String input = paramMap.get("name");
-      if (input.length() > 0) 
-        temp.setName(input);
-      
-      if ((input = paramMap.get("email")) != null)
-        temp.setEmail(input);
-      
-      if ((input = paramMap.get("password")) != null)
-        temp.setPassword(input);
-      
-      if ((input = paramMap.get("photo")) != null)
-        temp.setPhoto(input);
-      
-      if ((input = paramMap.get("tel")) != null)
-        temp.setTel(input);
-      
-      list.set(index, temp);
-      
-      out.println("회원을 변경했습니다.");
+      if (count > 0)
+        out.println("회원을 변경했습니다.");
+      else 
+        out.println("해당 회원을 찾을 수 없습니다.");
       
     } catch (Exception e) {
-      out.println("변경 중 오류 발생!");
+      throw e;
+    } finally {
+      try {stmt.close();} catch (Exception ex) {}
     }
-  }
-  
-  private int indexOfMember(int no) {
-    for (int i = 0; i < list.size(); i++) {
-      Member m = list.get(i);
-      if (m.getNo() == no)
-        return i;
-    }
-    return -1;
   }
 }

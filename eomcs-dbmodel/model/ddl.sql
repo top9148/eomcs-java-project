@@ -29,8 +29,8 @@ CREATE TABLE LESSON (
   CONT   TEXT         NOT NULL COMMENT '수업내용', -- 수업내용
   SDT    DATE         NOT NULL COMMENT '시작일', -- 시작일
   EDT    DATE         NOT NULL COMMENT '종료일', -- 종료일
-  TOT_HR INTEGER      NULL     COMMENT '총수업시간', -- 총수업시간
-  DAY_HR INTEGER      NULL     COMMENT '일수업시간', -- 일수업시간
+  TOT_HR INTEGER      NOT NULL COMMENT '총수업시간', -- 총수업시간
+  DAY_HR INTEGER      NOT NULL COMMENT '일수업시간', -- 일수업시간
   MNO    INTEGER      NOT NULL COMMENT '회원번호' -- 회원번호
 )
 COMMENT '수업';

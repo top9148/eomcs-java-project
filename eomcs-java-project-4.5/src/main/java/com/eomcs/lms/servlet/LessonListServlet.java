@@ -1,25 +1,38 @@
 package com.eomcs.lms.servlet;
 
 import java.io.PrintWriter;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Lesson;
 
 public class LessonListServlet implements Servlet {
   
-  List<Lesson> list;
+  Connection connection;
 
-  public LessonListServlet(List<Lesson> list) {
-    this.list = list;
+  public LessonListServlet(Connection connection) {
+    this.connection = connection;
   }
   
   @Override
   public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
-    Lesson[] lessons = list.toArray(new Lesson[] {});
-    for (Lesson lesson : lessons) {
-      out.printf("%3d, %-15s, %10s ~ %10s, %4d\n", 
-          lesson.getNo(), lesson.getTitle(), 
-          lesson.getStartDate(), lesson.getEndDate(), lesson.getTotalHours());
+    // 명령 예) /lesson/list
+    Statement stmt = null;
+    ResultSet rs = null;
+    
+    try {
+      stmt = connection.createStatement();
+      rs = stmt.executeQuery("SELECT LNO,TITLE,SDT,EDT,TOT_HR FROM LESSON");
+      while (rs.next()) {
+        out.printf("%3d, %-15s, %10s ~ %10s, %4d\n", 
+            rs.getInt("LNO"), rs.getString("TITLE"), 
+            rs.getDate("SDT"), rs.getDate("EDT"), rs.getInt("TOT_HR"));
+      }
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      try {rs.close();} catch (Exception ex) {}
+      try {stmt.close();} catch (Exception ex) {}
     }
   }
 }

@@ -1,31 +1,36 @@
 package com.eomcs.lms.servlet;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.Map;
-import com.eomcs.lms.domain.Member;
 
 public class MemberAddServlet implements Servlet {
   
-  List<Member> list;
-  
-  public MemberAddServlet(List<Member> list) {
-    this.list = list;
+  Connection connection;
+
+  public MemberAddServlet(Connection connection) {
+    this.connection = connection;
   }
   
   @Override
   public void service(Map<String,String> paramMap, PrintWriter out) throws Exception {
-    Member member = new Member();
-    member.setNo(Integer.parseInt(paramMap.get("no")));
-    member.setName(paramMap.get("name"));
-    member.setEmail(paramMap.get("email"));
-    member.setPassword(paramMap.get("password"));
-    member.setPhoto(paramMap.get("photo"));
-    member.setTel(paramMap.get("tel"));
-    member.setRegisteredDate(new Date(System.currentTimeMillis())); 
-    
-    list.add(member);
-    
-    out.println("저장하였습니다.");
+    // 명령 예) /member/add?name=오호라&email=ohora@test.com&password=1111&photo=ohora.jpeg&tel=1111-2222
+    Statement stmt = null;
+    try { 
+      stmt = connection.createStatement();
+      stmt.executeUpdate("INSERT INTO MEMBER(NAME,EMAIL,PWD,PHOTO,TEL)"
+          + " VALUES('" + paramMap.get("name")
+          + "','" + paramMap.get("email")
+          + "','" + paramMap.get("password")
+          + "','" + paramMap.get("photo")
+          + "','" + paramMap.get("tel") + "')");
+      
+      out.println("회원을 저장했습니다.");
+      
+    } catch (Exception e) {
+      throw e;
+    } finally {
+      try {stmt.close();} catch (Exception ex) {}
+    }
   }
 }
