@@ -1,0 +1,145 @@
+# eomcs-java-project-4.1-server
+
+네트워크 API를 활용하여 다른 프로그램과 데이터 주고 받기
+
+- 데이터 관리를 별도의 프로그램으로 분리하기
+- 네트워크 API를 사용하여 다른 프로그램과 통신하기
+- 클라이언트/서버 구조의 이해
+- `Stateful` 통신 방식의 특징과 장단점 이해하기
+  
+## 프로젝트 - 수업관리 시스템  
+
+### 과제: 데이터 관리 기능을 별도의 프로그램으로 분리하여 서버로 만든다.
+
+`App.java`에서 데이터 관리 기능을 분리하여 `ServerApp.java`를 정의한다.
+
+#### 0단계
+서버 애플리케이션 프로그래밍을 위한 프로젝트 `eomcs-java-project`를 생성한다. 프로젝트를 만들고 초기화시키는 것은 **1.0 자바 애플리케이션 프로젝트 만들기**를 참조하라.
+
+#### 1단계 
+간단한 통신을 수행할 서버 프로그램과 서버 프로그램을 테스트할 클라이언트 프로그램을 만든다.
+
+- ServerApp.java (ServerApp.java.01)
+    - `ServerSocket`을 이용하여 클라이언트 연결 요청을 승인한다.
+- ServerTest.java (ServerTest.java.01)
+    - 서버와의 연결을 테스트한다.
+
+#### 2단계 
+클라이언트, 서버 사이에 간단한 인사말을 주고 받는다.
+
+- ServerApp.java (ServerApp.java.02)
+    - `Socket`의 입출력 스트림을 통해 데이터를 읽고 쓴다.
+- ServerTest.java (ServerTest.java.02)
+    - `Socket`의 출력 스트림으로 먼저 데이터를 보내고, 입력 스트림으로 들어 온 데이터를 출력한다.
+
+#### 3단계
+클라이언트/서버 사이에 클래스의 인스턴스를 주고 받는다.
+
+- com.eomcs.domain 패키지 복사
+    - `eomcs-java-project`의 도메인 클래스를 모두 복사해온다.
+    - 테스트할 때 객체의 필드 값을 확인하기 쉽게 toString()을 오버라이딩한다.
+- ServerApp.java (ServerApp.java.03)
+    - ObjectInputStream/ObjectOutputStream 을 사용하여 객체를 주고 받는다.
+- ServerTest.java (ServerTest.java.03)
+    - `Socket`의 출력 스트림으로 먼저 데이터를 보내고, 입력 스트림으로 들어 온 데이터를 출력한다.
+
+#### 4단계
+클라이언트가 보낸 객체를 보내면 서버에서 받아 컬렉션에 저장하고, 클라이언트가 객체를 요청하면 서버에서 컬렉션에서 객체를 꺼내 보내주게 한다.
+
+- ServerApp.java (ServerApp.java.04)
+    - 명령어에 따라 컬렉션에 객체를 저장하거나 꺼낸다.
+- ServerTest.java (ServerTest.java.04)
+    - 명령어를 객체를 저장, 조회를 요청한다.
+
+#### 5단계
+Member 객체를 저장하고, 꺼내고, 변경하고, 삭제하는 기능을 구현한다.
+
+- ServerApp.java (ServerApp.java.05)
+    - 명령어에 따라 저장, 조회, 변경, 삭제를 구분하여 Member 데이터를 관리한다.
+- ServerTest.java (ServerTest.java.05)
+    - 서버의 Member 객체 관리 기능을 테스트한다.
+
+#### 6단계
+Lesson과 Board 객체를 저장하고, 꺼내고, 변경하고, 삭제하는 기능을 추가한다.
+
+- ServerApp.java (ServerApp.java.06)
+    - 명령어에 따라 저장, 조회, 변경, 삭제를 구분하여 Lesson이나 Board 데이터를 관리한다.
+- ServerTest.java (ServerTest.java.06)
+    - 서버의 Lesson, Board 객체 관리 기능을 테스트한다.
+
+#### 7단계 - 클래스 문법을 사용하여 메서드와 필드 분류하기
+Lesson, Member, Board 데이터 처리와 관련된 메서드를 별도의 클래스로 분리한다.
+
+- LessonDao.java (LessonDao.java.01)
+    - `ServerApp`에서 `Lesson` 데이터 처리와 관련된 코드를 이 클래스로 옮긴다.
+- MemberDao.java (MemberDao.java.01)
+    - `ServerApp`에서 `Member` 데이터 처리와 관련된 코드를 이 클래스로 옮긴다.
+- BoardDao.java (BoardDao.java.01)
+    - `ServerApp`에서 `Board` 데이터 처리와 관련된 코드를 이 클래스로 옮긴다.
+- ServerApp.java (ServerApp.java.07)
+    - LessonDao, MemberDao, BoardDao 클래스를 사용한다.
+- ServerTest.java (ServerTest.java.07)
+    - 변경사항 없음
+
+#### 8단계 - 패키지를 사용하여 클래스 분류하기
+DAO 클래스를 별도의 패키지로 분류한다.
+
+- com.eomcs.lms.dao 패키지
+    - 이 패키지를 생성한 후 DAO 클래스를 이 패키지로 옮긴다.
+- LessonDao.java (LessonDao.java.02)
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- MemberDao.java (MemberDao.java.02)
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- BoardDao.java (BoardDao.java.02)
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- ServerApp.java (ServerApp.java.08)
+    - LessonDao, MemberDao, BoardDao 클래스의 패키지 추가한다.
+- ServerTest.java (ServerTest.java.08)
+    - 변경사항 없음
+
+#### 9단계 - 스태틱 멤버를 인스턴스 멤버로 전환하기
+같은 객체에 대해 여러 목록을 유지할 수 있도록 DAO의 스태틱 멤버를 인스턴스 멤버로 전환한다. 즉 게시판을 여러 개 만들 수 있도록 BoardDao의 필드와 멤버를 인스턴스로 전환한다.
+
+- LessonDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.
+- MemberDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.
+- BoardDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.        
+- ServerApp.java (ServerApp.java.09)
+    - LessonDao, MemberDao, BoardDao 클래스의 인스턴스를 생성하여 메서드를 호출한다.
+- ServerTest.java (ServerTest.java.09)
+    - 변경사항 없음
+
+#### 10 단계 - 데이터를 파일에 저장하고 로딩하기
+DAO에서 관리하는 데이터를 서버 애플리케이션을 종료하기 전에 파일에 저장하고, 서버 애플리케이션을 시작할 때 파일 데이터를 로딩한다.
+
+- com.eomcs.context 패키지
+    - `eomcs-java-project`에서 context 패지키를 복사해온다.
+    
+
+
+
+## 실습 소스
+
+- src/main/java/com/eomcs/lms/servlet 패키지 생성
+- src/main/java/com/eomcs/lms/servlet/Servlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/LessonAddServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/LessonDeleteServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/LessonDetailServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/LessonListServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/LessonUpdateServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/MemberAddServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/MemberDeleteServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/MemberDetailServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/MemberListServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/MemberUpdateServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/BoardAddServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/BoardDeleteServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/BoardDetailServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/BoardListServlet.java 추가
+- src/main/java/com/eomcs/lms/servlet/BoardUpdateServlet.java 추가
+- src/main/java/com/eomcs/lms/ClientApp.java 추가
+- src/main/java/com/eomcs/lms/ServerApp.java 추가
+- src/main/java/com/eomcs/lms/handler 패키지 및 하위 클래스 모두 삭제
+- src/main/java/com/eomcs/lms/App.java 삭제

@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.Stack;
 
-public class ClientApp {
+public class ClientApp2 {
   
   static final int DEFAULT_PORT = 8888;
   
@@ -16,11 +16,11 @@ public class ClientApp {
   
   Socket socket;
   
-  public ClientApp(String host) throws Exception {
+  public ClientApp2(String host) throws Exception {
     this(host, DEFAULT_PORT);
   }
   
-  public ClientApp(String host, int port) throws Exception {
+  public ClientApp2(String host, int port) throws Exception {
     socket = new Socket(host, port);
   }
   
@@ -84,7 +84,7 @@ public class ClientApp {
   }
   
   public static void main(String[] args) throws Exception {
-    ClientApp clientApp = new ClientApp("localhost", 8888);
+    ClientApp2 clientApp = new ClientApp2("localhost", 8888);
     clientApp.service();
   }
 }
