@@ -81,6 +81,53 @@ Lesson, Member, Board 데이터 처리와 관련된 메서드를 별도의 클�
 - ServerTest.java
     - 변경사항 없음
 
+#### ver 4.1.8 - 패키지를 사용하여 클래스 분류하기
+DAO 클래스를 별도의 패키지로 분류한다.
+
+- com.eomcs.lms.dao 패키지
+    - 이 패키지를 생성한 후 DAO 클래스를 이 패키지로 옮긴다.
+- LessonDao.java
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- MemberDao.java
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- BoardDao.java
+    - com.eomcs.lms.dao 패키지로 이동한다.
+- ServerApp.java
+    - LessonDao, MemberDao, BoardDao 클래스의 패키지 추가한다.
+- ServerTest.java
+    - 변경사항 없음
+
+#### ver 4.1.9 - 스태틱 멤버를 인스턴스 멤버로 전환하기
+같은 객체에 대해 여러 목록을 유지할 수 있도록 DAO의 스태틱 멤버를 인스턴스 멤버로 전환한다. 즉 게시판을 여러 개 만들 수 있도록 BoardDao의 필드와 멤버를 인스턴스로 전환한다.
+
+- LessonDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.
+- MemberDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.
+- BoardDao.java
+    - 스태틱 멤버를 인스턴스 멤버로 전환한다.        
+- ServerApp.java
+    - LessonDao, MemberDao, BoardDao 클래스의 인스턴스를 생성하여 메서드를 호출한다.
+- ServerTest.java
+    - 변경사항 없음
+
+#### ver 4.1.10 - 데이터를 파일에 저장하고 로딩하기
+
+DAO 객체를 생성할 때 파일에서 데이터를 로딩하고, 클라이언트와의 연결을 끊을 때 데이터를 파일에 저장한다.
+
+- LessonDao.java
+    - `eomcs-java-project`의 DataLoaderListner에서 `Lesson` 데이터를 로딩하고 저장하는 메서드를 가져와서 편집한다.
+- MemberDao.java
+    - `eomcs-java-project`의 DataLoaderListner에서 `Member` 데이터를 로딩하고 저장하는 메서드를 가져와서 편집한다.
+- BoardDao.java
+    - `eomcs-java-project`의 DataLoaderListner에서 `Board` 데이터를 로딩하고 저장하는 메서드를 가져와서 편집한다.
+- ServerApp.java
+    - 클라이언트가 연결을 끊을 때 DAO 객체의 saveData()를 호출하여 데이터를 저장한다.
+    - 클라이언트 요청 처리 코드에 예외 처리를 적용한다.
+- ServerTest.java
+    - 데이터를 추가하고 조회한다. 
+    - shutdown() 메서드를 추가한다.
+
 
 #### 실행 결과
 
@@ -92,68 +139,35 @@ Lesson, Member, Board 데이터 처리와 관련된 메서드를 별도의 클�
 .
 클라이언트와 연결되었음.
 클라이언트와 연결을 끊었음.
+수업 데이터를 저장했습니다.
+회원 데이터를 저장했습니다.
+게시글 데이터를 저장했습니다.
+클라이언트와 연결되었음.
+클라이언트와 연결을 끊었음.
+수업 데이터를 저장했습니다.
+회원 데이터를 저장했습니다.
+게시글 데이터를 저장했습니다.
 ```
 
 `ClientApp`을 실행한다.
 ```
 서버와 연결되었음.
-[/member/add] -----------------
-ok
-[/member/add] -----------------
-ok
 [/member/list] -----------------
-Member [no=1, name=홍길동, email=hong@test.com, password=1111, photo=hong.jpeg, tel=1111-2222, registeredDate=null]
-Member [no=2, name=임꺽정, email=leem@test.com, password=1111, photo=leem.jpeg, tel=1111-3333, registeredDate=null]
-[/member/detail] -----------------
-Member [no=1, name=홍길동, email=hong@test.com, password=1111, photo=hong.jpeg, tel=1111-2222, registeredDate=null]
-[/member/update] -----------------
-작업 성공!
-[/member/detail] -----------------
 Member [no=1, name=홍길동x, email=hongx@test.com, password=1112, photo=hongx.jpeg, tel=1111-2223, registeredDate=null]
-[/member/delete] -----------------
-작업 성공!
-[/member/list] -----------------
 Member [no=2, name=임꺽정, email=leem@test.com, password=1111, photo=leem.jpeg, tel=1111-3333, registeredDate=null]
-[/lesson/add] -----------------
-ok
-[/lesson/add] -----------------
-ok
 [/lesson/list] -----------------
-Lesson [no=1, title=과정1, contents=과정설명1, startDate=2019-01-01, endDate=2019-01-15, totalHours=1000, dayHours=8]
-Lesson [no=2, title=과정2, contents=과정설명2, startDate=2019-02-01, endDate=2019-02-15, totalHours=1000, dayHours=8]
-[/lesson/detail] -----------------
-Lesson [no=1, title=과정1, contents=과정설명1, startDate=2019-01-01, endDate=2019-01-15, totalHours=1000, dayHours=8]
-[/lesson/update] -----------------
-작업 성공!
-[/lesson/detail] -----------------
 Lesson [no=1, title=과정1x, contents=과정설명1x, startDate=2019-01-02, endDate=2019-01-16, totalHours=1001, dayHours=9]
-[/lesson/delete] -----------------
-작업 성공!
-[/lesson/list] -----------------
 Lesson [no=2, title=과정2, contents=과정설명2, startDate=2019-02-01, endDate=2019-02-15, totalHours=1000, dayHours=8]
-[/board/add] -----------------
-ok
-[/board/add] -----------------
-ok
 [/board/list] -----------------
-Board [no=1, contents=내용1..., createdDate=null, viewCount=1]
-Board [no=2, contents=내용2..., createdDate=null, viewCount=1]
-[/board/detail] -----------------
-Board [no=1, contents=내용1..., createdDate=null, viewCount=1]
-[/board/update] -----------------
-작업 성공!
-[/board/detail] -----------------
 Board [no=1, contents=내용1...xxx, createdDate=null, viewCount=2]
-[/board/delete] -----------------
-작업 성공!
-[/board/list] -----------------
 Board [no=2, contents=내용2..., createdDate=null, viewCount=1]
 서버와 연결을 끊었음.
 ```
 
 ## 실습 소스
 
-- src/main/java/com/eomcs/lms/LessonDao.java 추가
-- src/main/java/com/eomcs/lms/MemberDao.java 추가
-- src/main/java/com/eomcs/lms/BoardDao.java 추가
+- src/main/java/com/eomcs/lms/dao/LessonDao.java 변경
+- src/main/java/com/eomcs/lms/dao/MemberDao.java 변경
+- src/main/java/com/eomcs/lms/dao/BoardDao.java 변경
 - src/main/java/com/eomcs/lms/ServerApp.java 변경
+- src/main/java/com/eomcs/lms/ServerTest.java 변경

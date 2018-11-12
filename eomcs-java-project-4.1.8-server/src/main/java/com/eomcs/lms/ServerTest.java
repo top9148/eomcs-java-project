@@ -23,8 +23,13 @@ public class ServerTest {
     in = new ObjectInputStream(socket.getInputStream());
 
     testMember();
+    System.out.println();
+    
     testLesson();
+    System.out.println();
+    
     testBoard();
+    System.out.println();
     
     quit();
     
@@ -46,29 +51,29 @@ public class ServerTest {
 
     add("/member/add", m);
     
-    Member m2 = new Member();
-    m2.setNo(2);
-    m2.setName("임꺽정");
-    m2.setEmail("leem@test.com");
-    m2.setPassword("1111");
-    m2.setPhoto("leem.jpeg");
-    m2.setTel("1111-3333");
+    m = new Member();
+    m.setNo(2);
+    m.setName("임꺽정");
+    m.setEmail("leem@test.com");
+    m.setPassword("1111");
+    m.setPhoto("leem.jpeg");
+    m.setTel("1111-3333");
 
-    add("/member/add", m2);
+    add("/member/add", m);
     
     list("/member/list");
 
     detail("/member/detail", 1);
     
-    Member m3 = new Member();
-    m3.setNo(1);
-    m3.setName("홍길동x");
-    m3.setEmail("hongx@test.com");
-    m3.setPassword("1112");
-    m3.setPhoto("hongx.jpeg");
-    m3.setTel("1111-2223");
+    m = new Member();
+    m.setNo(1);
+    m.setName("홍길동x");
+    m.setEmail("hongx@test.com");
+    m.setPassword("1112");
+    m.setPhoto("hongx.jpeg");
+    m.setTel("1111-2223");
     
-    update("/member/update", m3);
+    update("/member/update", m);
 
     detail("/member/detail", 1);
 

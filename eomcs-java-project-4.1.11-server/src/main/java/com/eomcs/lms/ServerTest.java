@@ -22,16 +22,16 @@ public class ServerTest {
     out = new ObjectOutputStream(socket.getOutputStream());
     in = new ObjectInputStream(socket.getInputStream());
 
-    testMember();
-    System.out.println();
+    //testMemberAdd();
+    //testLessonAdd();
+    //testBoardAdd();
     
-    testLesson();
-    System.out.println();
+    testMemberList();
+    testLessonList();
+    testBoardList();
     
-    testBoard();
-    System.out.println();
-    
-    quit();
+    //quit();
+    shutdown();
     
     in.close();
     out.close();
@@ -40,7 +40,7 @@ public class ServerTest {
 
   }
   
-  private static void testMember() throws Exception {
+  private static void testMemberAdd() throws Exception {
     Member m = new Member();
     m.setNo(1);
     m.setName("홍길동");
@@ -61,10 +61,6 @@ public class ServerTest {
 
     add("/member/add", m);
     
-    list("/member/list");
-
-    detail("/member/detail", 1);
-    
     m = new Member();
     m.setNo(1);
     m.setName("홍길동x");
@@ -74,15 +70,13 @@ public class ServerTest {
     m.setTel("1111-2223");
     
     update("/member/update", m);
+  }
 
-    detail("/member/detail", 1);
-
-    delete("/member/delete", 1);
-
+  private static void testMemberList() throws Exception {
     list("/member/list");
   }
   
-  private static void testLesson() throws Exception {
+  private static void testLessonAdd() throws Exception {
     Lesson obj = new Lesson();
     obj.setNo(1);
     obj.setTitle("과정1");
@@ -105,10 +99,6 @@ public class ServerTest {
 
     add("/lesson/add", obj);
     
-    list("/lesson/list");
-
-    detail("/lesson/detail", 1);
-    
     obj = new Lesson();
     obj.setNo(1);
     obj.setTitle("과정1x");
@@ -119,15 +109,13 @@ public class ServerTest {
     obj.setDayHours(9);
     
     update("/lesson/update", obj);
-
-    detail("/lesson/detail", 1);
-
-    delete("/lesson/delete", 1);
-
+  }
+  
+  private static void testLessonList() throws Exception {
     list("/lesson/list");
   }
-
-  private static void testBoard() throws Exception {
+  
+  private static void testBoardAdd() throws Exception {
     Board obj = new Board();
     obj.setNo(1);
     obj.setContents("내용1...");
@@ -142,21 +130,15 @@ public class ServerTest {
 
     add("/board/add", obj);
     
-    list("/board/list");
-
-    detail("/board/detail", 1);
-    
     obj = new Board();
     obj.setNo(1);
     obj.setContents("내용1...xxx");
     obj.setViewCount(2);
     
     update("/board/update", obj);
+  }
 
-    detail("/board/detail", 1);
-
-    delete("/board/delete", 1);
-
+  private static void testBoardList() throws Exception {
     list("/board/list");
   }
   
@@ -237,10 +219,13 @@ public class ServerTest {
     System.out.println(obj);
   }
   
-  
-  
   private static void quit() throws Exception {
     out.writeUTF("quit");
+    out.flush();
+  }
+  
+  private static void shutdown() throws Exception {
+    out.writeUTF("shutdown");
     out.flush();
   }
 

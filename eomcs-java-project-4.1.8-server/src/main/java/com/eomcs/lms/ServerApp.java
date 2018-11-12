@@ -11,10 +11,7 @@ import com.eomcs.lms.dao.MemberDao;
 public class ServerApp {
 
   public static void main(String[] args) throws Exception {
-    LessonDao lessonDao = new LessonDao();
-    MemberDao memberDao = new MemberDao();
-    BoardDao boardDao = new BoardDao();
-    
+
     ServerSocket serverSocket = new ServerSocket(8888);
     System.out.println("서버 시작!");
     
@@ -32,49 +29,49 @@ public class ServerApp {
         
         switch (command) {
           case "/member/add":
-            memberDao.add(in, out);
+            MemberDao.add(in, out);
             break;
           case "/member/detail":
-            memberDao.detail(in, out);
+            MemberDao.detail(in, out);
             break;
           case "/member/list":
-            memberDao.list(in, out);
+            MemberDao.list(in, out);
             break;
           case "/member/update":
-            memberDao.update(in, out);
+            MemberDao.update(in, out);
             break;
           case "/member/delete":
-            memberDao.delete(in, out);
+            MemberDao.delete(in, out);
             break;
           case "/lesson/add":
-            lessonDao.add(in, out);
+            LessonDao.add(in, out);
             break;
           case "/lesson/detail":
-            lessonDao.detail(in, out);
+            LessonDao.detail(in, out);
             break;
           case "/lesson/list":
-            lessonDao.list(in, out);
+            LessonDao.list(in, out);
             break;
           case "/lesson/update":
-            lessonDao.update(in, out);
+            LessonDao.update(in, out);
             break;
           case "/lesson/delete":
-            lessonDao.delete(in, out);
+            LessonDao.delete(in, out);
             break; 
           case "/board/add":
-            boardDao.add(in, out);
+            BoardDao.add(in, out);
             break;
           case "/board/detail":
-            boardDao.detail(in, out);
+            BoardDao.detail(in, out);
             break;
           case "/board/list":
-            boardDao.list(in, out);
+            BoardDao.list(in, out);
             break;
           case "/board/update":
-            boardDao.update(in, out);
+            BoardDao.update(in, out);
             break;
           case "/board/delete":
-            boardDao.delete(in, out);
+            BoardDao.delete(in, out);
             break;
           case "quit":
             break loop1;
@@ -90,4 +87,9 @@ public class ServerApp {
       System.out.println("클라이언트와 연결을 끊었음.");
     } 
   }
+
+
+ 
+  
+
 }

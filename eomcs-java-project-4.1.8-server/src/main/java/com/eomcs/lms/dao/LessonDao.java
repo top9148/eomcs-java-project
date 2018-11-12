@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonDao {
-  ArrayList<Lesson> lessons = new ArrayList<>();
+  static ArrayList<Lesson> lessons = new ArrayList<>();
   
-  public void delete(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public static void delete(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     int no = in.readInt();
     int index = indexOf(no);
     
@@ -21,7 +21,7 @@ public class LessonDao {
     out.flush();
   }
 
-  public void update(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public static void update(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     Lesson lesson = (Lesson) in.readObject();
     
     int index = indexOf(lesson.getNo());
@@ -35,14 +35,14 @@ public class LessonDao {
     out.flush();
   }
 
-  public void list(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public static void list(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     out.writeUTF("ok");
     Lesson[] arr = new Lesson[lessons.size()];
     out.writeObject(lessons.toArray(arr));
     out.flush();
   }
 
-  public void detail(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public static void detail(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     int no = in.readInt();
     int index = indexOf(no);
     
@@ -55,14 +55,14 @@ public class LessonDao {
     out.flush();
   }
 
-  public void add(ObjectInputStream in, ObjectOutputStream out) throws Exception {
+  public static void add(ObjectInputStream in, ObjectOutputStream out) throws Exception {
     lessons.add((Lesson)in.readObject());
     
     out.writeUTF("ok");
     out.flush();
   }
   
-  private int indexOf(int no) {
+  private static int indexOf(int no) {
     for (int i = 0; i < lessons.size(); i++) {
       Lesson l = lessons.get(i);
       if (l.getNo() == no)
