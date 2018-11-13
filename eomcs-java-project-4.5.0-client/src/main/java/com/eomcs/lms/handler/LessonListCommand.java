@@ -1,5 +1,6 @@
 package com.eomcs.lms.handler;
 
+import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
@@ -17,7 +18,7 @@ public class LessonListCommand implements Command {
   @Override
   public void execute() {
     try {
-      Lesson[] lessons = lessonDao.list();
+      List<Lesson> lessons = lessonDao.list();
       if (lessons == null) { 
         System.out.println("서버에서 데이터를 가져오는데 오류 발생!");
         return;

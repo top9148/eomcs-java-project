@@ -27,6 +27,9 @@ public class BoardDetailCommand implements Command {
       
       System.out.printf("내용: %s\n", board.getContents());
       System.out.printf("작성일: %s\n", board.getCreatedDate());
+      System.out.printf("조회수: %d\n", board.getViewCount());
+      System.out.printf("작성자: %d\n", board.getWriterNo());
+      System.out.printf("수업: %d\n", board.getLessonNo());
       
     } catch (Exception e) {
       System.out.printf("%s : %s\n", e.toString(), e.getMessage());

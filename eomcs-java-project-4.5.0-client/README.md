@@ -1,9 +1,11 @@
-# eomcs-java-project-4.4-client
+# eomcs-java-project-4.5-client
 
-JDBC API로 데이터베이스를 사용하기
+데이터 관리를 전문 프로그램인 DBMS에게 맡기기
 
-- JDBC API를 활용하여 데이터를 입출력하는 방법
-- JDBC 프로그래밍 코드를 캡슐화하여 DAO를 정의하기
+- 오픈 소스 DBMS `MariaDB`에 데이터베이스와 사용자 추가하는 방법
+- 테이블 생성과 예제 데이터 입력하기
+- JDBC API를 활용하여 DBMS에 데이터를 입력, 조회, 변경, 삭제하는 방법
+- JDBC 프로그래밍 코드를 클래스로 캡슐화하기
 
 ## 프로젝트 - 수업관리 시스템  
 
@@ -139,6 +141,15 @@ $ gradle eclipse
 
 ### 과제: 수업 데이터를 데이터베이스를 사용하여 관리하라.
 
+- Lesson.java
+    - DB의 `LESSON` 테이블에서 수업을 생성한 `회원 번호`가 필수 컬럼이다.
+    - 이 값을 저장할 필드와 셋터/겟터를 추가한다.
+    - toString()을 갱신한다.
+- Board.java
+    - DB의 `BOARD` 테이블에서 게시글을 등록한 `회원 번호`가 필수 컬럼이다.
+    - 또한 어느 수업에 대한 게시글인지를 가리키는 `수업 번호`가 필수 컬럼이다.
+    - 이 값을 저장할 필드와 셋터/겟터를 추가한다.
+    - toString()을 갱신한다.
 - `com.eomcs.lms.proxy` ==> `com.eomcs.lms.dao` 패키지 이름 변경
     - `proxy` 패키지명 대신에 데이터를 처리하는 객체를 두는 패키지라는 의미로 `dao` 라는 이름으로 변경한다.
 - `LessonDaoProxy.java` ==> `LessonDao.java` 이름 변경
@@ -154,51 +165,35 @@ $ gradle eclipse
     - 애플리케이션이 시작할 때 MariaDB 데이터베이스 서버에 연결한다.
     - 애플리케이션이 종료할 때 MariaDB 데이터베이스 서버와 연결을 끊는다.
     - DAO 객체를 생성할 때 Connection 객체를 파라미터로 제공한다.
-- App.java
-    - 파일에서 데이터를 로딩하는 일을 했던 `DataLoaderListener`는 제거한다.
-    - DB 연결을 준비하는 `JdbcContextListener`를 추가한다.
-    - 서블릿 객체를 생성할 때 `List` 대신 `Connection` 객체를 넘겨준다.
-- LessonListServlet.java
-    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에서 데이터를 꺼내온다.
-- LessonDetailServlet.java
-    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에서 해당 번호의 데이터를 꺼내온다.
-- LessonAddServlet.java
-    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에 데이터를 저장한다.
-- LessonUpdateServlet.java
-    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 해당 번호의 DB 데이터를 변경한다.
-- LessonDeleteServlet.java
-    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 해당 번호의 DB 데이터를 삭제한다.
+- LessonListCommand.java
+    - DAO의 리턴 값이 Lesson[] 배열에서 List 객체로 바뀌었다.
+    - 그에 따라 이 클래스의 코드도 변경한다.
+- LessonAddCommand.java
+    - DB에서 수업 번호를 자동증가시키기 때문에 `번호` 입력 항목을 제외한다.
+    - `강사` 번호가 필수 컬럼이기 때문에 입력 항목으로 추가한다.
+- LessonDetailCommand.java
+    - `강사` 번호 출력을 추가한다.
+- LessonUpdateCommand.java
+    - `강사` 번호를 변경할 수 있도록 변경 항목으로 추가한다.
+- MemberListCommand.java
+    - DAO의 리턴 값이 Member[] 배열에서 List 객체로 바뀌었다.
+    - 그에 따라 이 클래스의 코드도 변경한다.
+- MemberAddCommand.java
+    - DB에서 수업 번호를 자동증가시키기 때문에 `번호` 입력 항목을 제외한다.
+    - `등록일`은 DB에서 기본 값으로 현재 날짜가 자동으로 입력된다. 코드에서 제외한다.
+- BoardListCommand.java
+    - DAO의 리턴 값이 Board[] 배열에서 List 객체로 바뀌었다.
+    - 그에 따라 이 클래스의 코드도 변경한다.
+    - `작성자 번호`와 `수업 번호`도 출력한다.
+ - BoardAddCommand.java
+    - DB에서 수업 번호를 자동증가시키기 때문에 `번호` 입력 항목을 제외한다.
+    - `등록일`과 `조회수`는 DB에 설정된 기본 값으로 자동 입력된다. 따라서 코드에서 제외한다.
+    - `작성자`와 `수업`은 입력 항목으로 추가한다. 
+- BoardDetailCommand.java
+    - `조회수`, `작성자`, `수업`을 출력에 추가한다.  
+
 
 #### 실행 결과
-
-서버 애플리케이션의 `ServerApp`을 먼저 실행한다.
-```
-수업 데이터를 로딩 성공!
-회원 데이터를 로딩 성공!
-게시글 데이터를 로딩 성공!
-서버 시작!
-클라이언트와 연결되었음.
-스레드 생성됨!
-스레드 실행... - pool-1-thread-1
-/lesson/list 명령을 처리중...
-클라이언트와 연결을 끊었음.
-수업 데이터를 저장했습니다.
-회원 데이터를 저장했습니다.
-게시글 데이터를 저장했습니다.
-클라이언트와 연결되었음.
-스레드 생성됨!
-스레드 실행... - pool-1-thread-2
-/lesson/list 명령을 처리중...
-클라이언트와 연결을 끊었음.
-수업 데이터를 저장했습니다.
-회원 데이터를 저장했습니다.
-게시글 데이터를 저장했습니다.
-클라이언트와 연결되었음.
-스레드 생성됨!
-스레드 실행... - pool-1-thread-3
-/lesson/list 명령을 처리중...
-...
-```
 
 클라이언트 애플리케이션의 `App`을 실행한다. 실행은 이전 버전과 같다.
 ```
@@ -208,3 +203,23 @@ $ gradle eclipse
 
 ## 실습 소스
 
+- src/main/java/com/eomcs/lms/domain/Lesson.java 변경
+- src/main/java/com/eomcs/lms/domain/Board.java 변경
+- src/main/java/com/eomcs/lms/proxy 이름 변경
+    - `dao`로 패키지 이름 변경
+- src/main/java/com/eomcs/lms/proxy/LessonDaoProxy.java 이름 변경
+    - `LessonDao.java`로 이름 변경 및 내용 변경
+- src/main/java/com/eomcs/lms/proxy/MemberDaoProxy.java 이름 변경
+    - `MemberDao.java`로 이름 변경 및 내용 변경
+- src/main/java/com/eomcs/lms/proxy/BoardDaoProxy.java 이름 변경
+    - `BoardDao.java`로 이름 변경 및 내용 변경
+- src/main/java/com/eomcs/lms/DataLoaderListener.java 변경
+- src/main/java/com/eomcs/lms/handler/LessonListCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/LessonAddCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/LessonDetailCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/LessonUpdateCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/MemberListCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/MemberAddCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/BoardListCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/BoardAddCommand.java 변경
+- src/main/java/com/eomcs/lms/handler/BoardDetailCommand.java 변경

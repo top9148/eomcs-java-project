@@ -1,4 +1,5 @@
 package com.eomcs.lms.handler;
+import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
@@ -16,7 +17,7 @@ public class MemberListCommand implements Command {
   @Override
   public void execute() {
     try {
-      Member[] members = memberDao.list();
+      List<Member> members = memberDao.list();
       if (members == null) { 
         System.out.println("서버에서 데이터를 가져오는데 오류 발생!");
         return;

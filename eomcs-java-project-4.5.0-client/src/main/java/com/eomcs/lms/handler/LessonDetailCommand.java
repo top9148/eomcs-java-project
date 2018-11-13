@@ -30,6 +30,7 @@ public class LessonDetailCommand implements Command {
       System.out.printf("기간: %s ~ %s\n", lesson.getStartDate(), lesson.getEndDate());
       System.out.printf("총수업시간: %d\n", lesson.getTotalHours());
       System.out.printf("일수업시간: %d\n", lesson.getDayHours());
+      System.out.printf("강사: %d\n", lesson.getOwnerNo());
       
     } catch (Exception e) {
       System.out.printf("%s : %s\n", e.toString(), e.getMessage());

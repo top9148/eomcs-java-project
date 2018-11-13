@@ -1,7 +1,7 @@
 package com.eomcs.lms.dao;
 
 import java.sql.Connection;
-import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class LessonDao {
           + " EDT='" + lesson.getEndDate() + "',"
           + " TOT_HR=" + lesson.getTotalHours() + ","
           + " DAY_HR=" + lesson.getDayHours() + "," 
-          + " MNO=" + 100
+          + " MNO=" + lesson.getOwnerNo()
           + " WHERE LNO=" + lesson.getNo());
     }
   }
@@ -45,7 +45,7 @@ public class LessonDao {
           + "','" + lesson.getEndDate()
           + "'," + lesson.getTotalHours()
           + "," + lesson.getDayHours()
-          + "," + 100 + ")");
+          + "," + lesson.getOwnerNo() + ")");
     }
   }
 
@@ -71,8 +71,9 @@ public class LessonDao {
 
   public Lesson detail(int no) throws Exception {
     try (Statement stmt = connection.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT LNO,TITLE,CONT,SDT,EDT,TOT_HR,DAY_HR FROM LESSON"
-            + " WHERE LNO=" + no)) {
+        ResultSet rs = stmt.executeQuery(
+            "SELECT LNO,TITLE,CONT,SDT,EDT,TOT_HR,DAY_HR,MNO FROM LESSON WHERE LNO=" + no)) {
+
       if (rs.next()) {
         Lesson lesson = new Lesson();
         lesson.setNo(rs.getInt("LNO"));
@@ -82,8 +83,9 @@ public class LessonDao {
         lesson.setEndDate(rs.getDate("EDT"));
         lesson.setTotalHours(rs.getInt("TOT_HR"));
         lesson.setDayHours(rs.getInt("DAY_HR"));
+        lesson.setOwnerNo(rs.getInt("MNO"));
         return lesson;
-        
+
       } else {
         return null;
       }
@@ -92,38 +94,60 @@ public class LessonDao {
   }
 
   public static void main(String[] args) throws Exception {
-    
-    LessonDao lessonDao = new LessonDao(null);
+    try (Connection connection = DriverManager.getConnection(
+        "jdbc:mariadb://localhost:3306/eomcs?user=eomcs&password=1111")) {
+      
+      LessonDao lessonDao = new LessonDao(connection);
 
-    Lesson lesson = new Lesson();
-    lesson.setNo(3);
-    lesson.setTitle("자바 기초 과정");
-    lesson.setContents("자바 기초 문법 강의입니다.");
-    lesson.setStartDate(Date.valueOf("2019-1-1"));
-    lesson.setEndDate(Date.valueOf("2019-2-15"));
-    lesson.setTotalHours(80);
-    lesson.setDayHours(8);
+      /*
+      Lesson lesson = new Lesson();
+      lesson.setTitle("자바 기초 과정");
+      lesson.setContents("자바 기초 문법 강의입니다.");
+      lesson.setStartDate(Date.valueOf("2019-1-1"));
+      lesson.setEndDate(Date.valueOf("2019-2-15"));
+      lesson.setTotalHours(80);
+      lesson.setDayHours(8);
+      lesson.setOwnerNo(1);
 
-    lessonDao.add(lesson);
+      lessonDao.add(lesson);
+      
+      lesson = new Lesson();
+      lesson.setTitle("자바 기초 과정2");
+      lesson.setContents("자바 기초 문법 강의입니다.2");
+      lesson.setStartDate(Date.valueOf("2019-1-3"));
+      lesson.setEndDate(Date.valueOf("2019-2-16"));
+      lesson.setTotalHours(80);
+      lesson.setDayHours(8);
+      lesson.setOwnerNo(1);
 
-    lesson = new Lesson();
-    lesson.setNo(3);
-    lesson.setTitle("자바 기초 과정x");
-    lesson.setContents("자바 기초 문법 강의입니다.x");
-    lesson.setStartDate(Date.valueOf("2019-1-3"));
-    lesson.setEndDate(Date.valueOf("2019-2-18"));
-    lesson.setTotalHours(81);
-    lesson.setDayHours(9);
+      lessonDao.add(lesson);
+      */
+      
+      /*
+      System.out.println(lessonDao.detail(9));
+      
+      Lesson lesson = new Lesson();
+      lesson.setNo(9);
+      lesson.setTitle("자바 기초 과정x");
+      lesson.setContents("자바 기초 문법 강의입니다.x");
+      lesson.setStartDate(Date.valueOf("2019-1-3"));
+      lesson.setEndDate(Date.valueOf("2019-2-18"));
+      lesson.setTotalHours(81);
+      lesson.setDayHours(9);
+      lesson.setOwnerNo(1);
 
-    lessonDao.update(lesson);
+      lessonDao.update(lesson);
+      
+      
+      System.out.println(lessonDao.detail(9));
+      */
+      
+      lessonDao.delete(9);
 
-    System.out.println(lessonDao.detail(3));
-
-    lessonDao.delete(3);
-
-    List<Lesson> lessons = lessonDao.list();
-    for (Lesson b : lessons) {
-      System.out.println(b);
+      List<Lesson> lessons = lessonDao.list();
+      for (Lesson b : lessons) {
+        System.out.println(b);
+      }
     }
   }
 }

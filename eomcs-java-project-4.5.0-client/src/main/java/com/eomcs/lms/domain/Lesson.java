@@ -12,12 +12,13 @@ public class Lesson implements Cloneable, Serializable {
   private Date endDate;
   private int totalHours;
   private int dayHours;
+  private int ownerNo;
   
   @Override
   public String toString() {
     return "Lesson [no=" + no + ", title=" + title + ", contents=" + contents + ", startDate="
         + startDate + ", endDate=" + endDate + ", totalHours=" + totalHours + ", dayHours="
-        + dayHours + "]";
+        + dayHours + ", ownerNo=" + ownerNo + "]";
   }
 
   @Override
@@ -67,6 +68,10 @@ public class Lesson implements Cloneable, Serializable {
   public void setDayHours(int dayHours) {
     this.dayHours = dayHours;
   }
-  
-  
+  public int getOwnerNo() {
+    return ownerNo;
+  }
+  public void setOwnerNo(int ownerNo) {
+    this.ownerNo = ownerNo;
+  }
 }

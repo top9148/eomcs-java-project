@@ -9,11 +9,13 @@ public class Board implements Cloneable, Serializable {
   private String contents;
   private Date createdDate;
   private int viewCount;
+  private int writerNo;
+  private int lessonNo;
   
   @Override
   public String toString() {
     return "Board [no=" + no + ", contents=" + contents + ", createdDate=" + createdDate
-        + ", viewCount=" + viewCount + "]";
+        + ", viewCount=" + viewCount + ", writerNo=" + writerNo + ", lessonNo=" + lessonNo + "]";
   }
 
   @Override
@@ -45,6 +47,16 @@ public class Board implements Cloneable, Serializable {
   public void setViewCount(int viewCount) {
     this.viewCount = viewCount;
   }
-  
-  
+  public int getWriterNo() {
+    return writerNo;
+  }
+  public void setWriterNo(int writerNo) {
+    this.writerNo = writerNo;
+  }
+  public int getLessonNo() {
+    return lessonNo;
+  }
+  public void setLessonNo(int lessonNo) {
+    this.lessonNo = lessonNo;
+  }
 }

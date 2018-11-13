@@ -18,9 +18,6 @@ public class LessonAddCommand implements Command {
   public void execute() {
     Lesson lesson = new Lesson();
 
-    System.out.print("번호? ");
-    lesson.setNo(Integer.parseInt(keyboard.nextLine()));
-
     System.out.print("수업명? ");
     lesson.setTitle(keyboard.nextLine());
 
@@ -39,6 +36,9 @@ public class LessonAddCommand implements Command {
     System.out.print("일수업시간? ");
     lesson.setDayHours(Integer.parseInt(keyboard.nextLine()));
 
+    System.out.print("강사? ");
+    lesson.setOwnerNo(Integer.parseInt(keyboard.nextLine()));
+    
     try {
       lessonDao.add(lesson);
       System.out.println("수업을 저장했습니다.");

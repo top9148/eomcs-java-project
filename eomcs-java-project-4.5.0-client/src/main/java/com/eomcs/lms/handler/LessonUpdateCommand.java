@@ -51,6 +51,10 @@ public class LessonUpdateCommand implements Command {
       if ((input = keyboard.nextLine()).length() > 0)
         lesson.setDayHours(Integer.parseInt(input));
       
+      System.out.printf("강사(%d)? ", lesson.getOwnerNo());
+      if ((input = keyboard.nextLine()).length() > 0)
+        lesson.setOwnerNo(Integer.parseInt(input));
+      
       lessonDao.update(lesson);
       System.out.println("수업을 변경했습니다.");
       

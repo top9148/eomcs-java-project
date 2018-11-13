@@ -1,100 +1,82 @@
 package com.eomcs.lms.dao;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import com.eomcs.lms.domain.Board;
 
 public class BoardDao {
 
-  String host;
-  int port;
+  Connection connection;
 
-  public BoardDao(String host, int port) {
-    this.host = host;
-    this.port = port;
+  public BoardDao(Connection connection) {
+    this.connection = connection;
   }
 
   public int delete(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-
-      out.writeUTF("/board/delete");
-      out.writeInt(no);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }
+    try (Statement stmt = connection.createStatement()) { 
+      return stmt.executeUpdate("DELETE FROM BOARD WHERE BNO=" + no);
     }
   }
 
   public int update(Board board) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/board/update");
-      out.writeObject(board);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }
+    try (Statement stmt = connection.createStatement()) {
+      return stmt.executeUpdate("UPDATE BOARD SET"
+          + " CONT='" + board.getContents() + "'"
+          + " WHERE BNO=" + board.getNo());
     }
   }
 
   public int add(Board board) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/board/add");
-      out.writeObject(board);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }
+    try (Statement stmt = connection.createStatement()) {
+      return stmt.executeUpdate("INSERT INTO BOARD(CONT,MNO,LNO)"
+          + " VALUES('" + board.getContents()
+          + "'," + board.getWriterNo()
+          + "," + board.getLessonNo() + ")");
     }
   }
 
-  public Board[] list() throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/board/list");
-      out.flush();
+  public List<Board> list() throws Exception {
+    ArrayList<Board> boards = new ArrayList<>();
 
-      if (in.readUTF().equals("ok")) {
-        return (Board[]) in.readObject();
-      } else {
-        return null;
+    try (Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT BNO,CONT,CDT,VIEW,MNO,LNO FROM BOARD")) {
+
+      while (rs.next()) {
+        Board board = new Board();
+        board.setNo(rs.getInt("BNO"));
+        board.setContents(rs.getString("CONT"));
+        board.setCreatedDate(rs.getDate("CDT"));
+        board.setViewCount(rs.getInt("VIEW"));
+        board.setWriterNo(rs.getInt("MNO"));
+        board.setLessonNo(rs.getInt("LNO"));
+
+        boards.add(board);
       }
     }
+
+    return boards; 
   }
 
   public Board detail(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/board/detail");
-      out.writeInt(no);
-      out.flush();
+    try (Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(
+            "SELECT BNO,CONT,CDT,VIEW,MNO,LNO FROM BOARD WHERE BNO=" + no)) {
 
-      if (in.readUTF().equals("ok")) {
-        return (Board) in.readObject();
+      if (rs.next()) {
+        Board board = new Board();
+        board.setNo(rs.getInt("BNO"));
+        board.setContents(rs.getString("CONT"));
+        board.setCreatedDate(rs.getDate("CDT"));
+        board.setViewCount(rs.getInt("VIEW"));
+        board.setWriterNo(rs.getInt("MNO"));
+        board.setLessonNo(rs.getInt("LNO"));
+
+        return board;
+
       } else {
         return null;
       }
@@ -102,35 +84,44 @@ public class BoardDao {
   }
 
   public static void main(String[] args) throws Exception {
-    BoardDao boardDao = new BoardDao("localhost", 8888);
+    try (Connection connection = DriverManager.getConnection(
+        "jdbc:mariadb://localhost:3306/eomcs?user=eomcs&password=1111")) {
+      BoardDao boardDao = new BoardDao(connection);
 
+      /*
+      Board board = new Board();
+      board.setContents("내용입니다.");
+      board.setViewCount(0);
+      board.setCreatedDate(new Date(System.currentTimeMillis()));
+      board.setWriterNo(1);
+      board.setLessonNo(1);
+      
+      boardDao.add(board);
+      */
 
-    Board board = new Board();
-    board.setNo(3);
-    board.setContents("내용입니다.");
-    board.setViewCount(0);
-    board.setCreatedDate(new Date(System.currentTimeMillis()));
+      /*
+      System.out.println(boardDao.detail(11));
+      
+      Board board = new Board();
+      board.setNo(11);
+      board.setContents("내용입니다.x");
+      board.setViewCount(100);
+      board.setCreatedDate(new Date(System.currentTimeMillis()));
+      board.setWriterNo(2);
+      board.setLessonNo(3);
+      
+      boardDao.update(board);
 
-    boardDao.add(board);
-
-
-
-    board = new Board();
-    board.setNo(3);
-    board.setContents("내용입니다.x");
-    board.setViewCount(10);
-    board.setCreatedDate(new Date(System.currentTimeMillis()));
-
-    boardDao.update(board);
-
-
-    System.out.println(boardDao.detail(3));
-
-    boardDao.delete(3);
-
-    Board[] boards = boardDao.list();
-    for (Board b : boards) {
-      System.out.println(b);
+      
+      System.out.println(boardDao.detail(11));
+      */
+      
+      //boardDao.delete(11);
+      
+      List<Board> boards = boardDao.list();
+      for (Board b : boards) {
+        System.out.println(b);
+      }
     }
   }
 }

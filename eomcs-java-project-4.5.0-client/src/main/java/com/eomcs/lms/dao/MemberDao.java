@@ -1,99 +1,87 @@
 package com.eomcs.lms.dao;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.sql.Date;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import com.eomcs.lms.domain.Member;
 
 public class MemberDao {
 
-  String host;
-  int port;
+  Connection connection;
 
-  public MemberDao(String host, int port) {
-    this.host = host;
-    this.port = port;
+  public MemberDao(Connection connection) {
+    this.connection = connection;
   }
 
   public int delete(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/member/delete");
-      out.writeInt(no);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }    
+    try (Statement stmt = connection.createStatement()) { 
+      return stmt.executeUpdate("DELETE FROM MEMBER WHERE MNO=" + no);
     }
   }
 
   public int update(Member member) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/member/update");
-      out.writeObject(member);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }
+    try (Statement stmt = connection.createStatement()) {
+      return stmt.executeUpdate("UPDATE MEMBER SET"
+          + " NAME='" + member.getName() + "',"
+          + " EMAIL='" + member.getEmail() + "',"
+          + " PWD='" + member.getPassword() + "',"
+          + " PHOTO='" + member.getPhoto() + "',"
+          + " TEL='" + member.getTel() + "'"
+          + " WHERE MNO=" + member.getNo());
     }
   }
 
   public int add(Member member) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/member/add");
-      out.writeObject(member);
-      out.flush();
-
-      if (in.readUTF().equals("ok")) {
-        return 1;
-      } else {
-        return 0;
-      }
+    try (Statement stmt = connection.createStatement()) {
+      return stmt.executeUpdate("INSERT INTO MEMBER(NAME,EMAIL,PWD,PHOTO,TEL)"
+          + " VALUES('" + member.getName()
+          + "','" + member.getEmail()
+          + "','" + member.getPassword()
+          + "','" + member.getPhoto()
+          + "','" + member.getTel() + "')");
     }
   }
 
-  public Member[] list() throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/member/list");
-      out.flush();
+  public List<Member> list() throws Exception {
+    ArrayList<Member> members = new ArrayList<>();
 
-      if (in.readUTF().equals("ok")) {
-        return (Member[]) in.readObject();
-      } else {
-        return null;
+    try (Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT MNO,NAME,EMAIL,TEL,CDT FROM MEMBER")) {
+      while (rs.next()) {
+        Member member = new Member();
+        member.setNo(rs.getInt("MNO"));
+        member.setName(rs.getString("NAME"));
+        member.setEmail(rs.getString("EMAIL"));
+        member.setTel(rs.getString("TEL"));
+        member.setRegisteredDate(rs.getDate("CDT"));
+
+        members.add(member);
       }
     }
+
+    return members; 
   }
 
   public Member detail(int no) throws Exception {
-    try (Socket socket = new Socket(host, port);
-        ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-        ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
-        ) {
-      out.writeUTF("/member/detail");
-      out.writeInt(no);
-      out.flush();
+    try (Statement stmt = connection.createStatement();
+        ResultSet rs = stmt.executeQuery(
+            "SELECT MNO,NAME,EMAIL,PWD,PHOTO,TEL,CDT FROM MEMBER WHERE MNO=" + no)) {
 
-      if (in.readUTF().equals("ok")) {
-        return (Member) in.readObject();
+      if (rs.next()) {
+        Member member = new Member();
+        member.setNo(rs.getInt("MNO"));
+        member.setName(rs.getString("NAME"));
+        member.setEmail(rs.getString("EMAIL"));
+        member.setPassword(rs.getString("PWD"));
+        member.setPhoto(rs.getString("PHOTO"));
+        member.setTel(rs.getString("TEL"));
+        member.setRegisteredDate(rs.getDate("CDT"));
+
+        return member;
+
       } else {
         return null;
       }
@@ -101,37 +89,44 @@ public class MemberDao {
   }
 
   public static void main(String[] args) throws Exception {
-    MemberDao memberDao = new MemberDao("localhost", 8888);
+    try (Connection connection = DriverManager.getConnection(
+        "jdbc:mariadb://localhost:3306/eomcs?user=eomcs&password=1111")) {
+      MemberDao memberDao = new MemberDao(connection);
+      
+      /*
+      Member member = new Member();
+      member.setName("유관순2");
+      member.setEmail("yoo2@test.com");
+      member.setPassword("1112");
+      member.setPhoto("yoo2.jpeg");
+      member.setTel("1111-2222");
 
-    Member member = new Member();
-    member.setNo(3);
-    member.setName("유관순");
-    member.setEmail("yoo@test.com");
-    member.setPassword("1111");
-    member.setPhoto("yoo.jpeg");
-    member.setTel("1111-2222");
-    member.setRegisteredDate(new Date(System.currentTimeMillis()));
+      memberDao.add(member);
+      */
+      
+      /*
+      System.out.println(memberDao.detail(12));
+      
+      
+      Member member = new Member();
+      member.setNo(12);
+      member.setName("유관순2xx");
+      member.setEmail("yoo2xxx@test.com");
+      member.setPassword("1112xxx");
+      member.setPhoto("yoo2.jpegxxx");
+      member.setTel("1111-2222xxx");
 
-    memberDao.add(member);
+      memberDao.update(member);
 
-    member = new Member();
-    member.setNo(3);
-    member.setName("유관순x");
-    member.setEmail("yoo@test.comx");
-    member.setPassword("1111x");
-    member.setPhoto("yoo.jpegx");
-    member.setTel("1111-2222x");
-    member.setRegisteredDate(new Date(System.currentTimeMillis()));
-
-    memberDao.update(member);
-
-    System.out.println(memberDao.detail(3));
-
-    memberDao.delete(3);
-
-    Member[] members = memberDao.list();
-    for (Member b : members) {
-      System.out.println(b);
+      System.out.println(memberDao.detail(12));
+      */
+      
+      //memberDao.delete(12);
+      
+      List<Member> members = memberDao.list();
+      for (Member b : members) {
+        System.out.println(b);
+      }
     }
   }
 }

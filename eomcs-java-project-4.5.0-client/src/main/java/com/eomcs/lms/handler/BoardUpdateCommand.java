@@ -31,6 +31,7 @@ public class BoardUpdateCommand implements Command {
         board.setContents(input);
       
       boardDao.update(board);
+      
       System.out.println("게시글을 변경했습니다.");
       
     } catch (Exception e) {
