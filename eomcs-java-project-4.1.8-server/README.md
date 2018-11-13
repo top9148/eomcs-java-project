@@ -112,7 +112,7 @@ Member [no=1, name=홍길동, email=hong@test.com, password=1111, photo=hong.jpe
 클라이언트와 연결을 끊었음.
 ```
 
-`ClientApp`을 실행한다.
+`ServerTest`을 실행한다.
 ```
 서버와 연결되었음.
 [/member/add] -----------------

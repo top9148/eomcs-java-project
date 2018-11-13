@@ -24,7 +24,6 @@ public class DataLoaderListener implements ApplicationContextListener {
       out = new ObjectOutputStream(socket.getOutputStream());
       in = new ObjectInputStream(socket.getInputStream()); 
 
-      // 읽어 들인 데이터를 Map 객체에 보관한다.
       context.put("lessonDao", new LessonDaoProxy(in, out));
       context.put("memberDao", new MemberDaoProxy(in, out));
       context.put("boardDao", new BoardDaoProxy(in, out));
