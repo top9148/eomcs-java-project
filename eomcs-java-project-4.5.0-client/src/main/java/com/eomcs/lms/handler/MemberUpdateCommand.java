@@ -1,14 +1,14 @@
 package com.eomcs.lms.handler;
 import java.util.Scanner;
+import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
-import com.eomcs.lms.proxy.MemberDaoProxy;
 
 public class MemberUpdateCommand implements Command {
   
   Scanner keyboard;
-  MemberDaoProxy memberDao;
+  MemberDao memberDao;
 
-  public MemberUpdateCommand(Scanner keyboard, MemberDaoProxy memberDao) {
+  public MemberUpdateCommand(Scanner keyboard, MemberDao memberDao) {
     this.keyboard = keyboard;
     this.memberDao = memberDao;
   }

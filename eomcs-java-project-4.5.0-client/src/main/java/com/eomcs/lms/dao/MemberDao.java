@@ -1,4 +1,4 @@
-package com.eomcs.lms.proxy;
+package com.eomcs.lms.dao;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -6,12 +6,12 @@ import java.net.Socket;
 import java.sql.Date;
 import com.eomcs.lms.domain.Member;
 
-public class MemberDaoProxy {
+public class MemberDao {
 
   String host;
   int port;
 
-  public MemberDaoProxy(String host, int port) {
+  public MemberDao(String host, int port) {
     this.host = host;
     this.port = port;
   }
@@ -101,7 +101,7 @@ public class MemberDaoProxy {
   }
 
   public static void main(String[] args) throws Exception {
-    MemberDaoProxy memberDao = new MemberDaoProxy("localhost", 8888);
+    MemberDao memberDao = new MemberDao("localhost", 8888);
 
     Member member = new Member();
     member.setNo(3);

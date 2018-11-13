@@ -27,9 +27,7 @@ MariaDB [(none)]> CREATE USER 'eomcs'@'localhost' IDENTIFIED BY '1111';
 ```
 
 데이터베이스 생성하기
-> CREATE DATABASE 데이터베이스명 
-> CHARACTER SET utf8 
-> COLLATE utf8_general_ci;
+> CREATE DATABASE 데이터베이스명 CHARACTER SET utf8 COLLATE utf8_general_ci;
 ```
 MariaDB [(none)]> CREATE DATABASE eomcs
   CHARACTER SET utf8
@@ -101,6 +99,35 @@ eomcs-java-project    (Git 저장소)
 
 - build.gradle
     - 의존 라이브러리에 MariaDB JDBC Driver 정보를 추가한다.
+    - 예를 들면, `mvnrepository.com`에서 키워드 `mariadb jdbc`로 검색하면 **MariaDB Java Client** 라이브러리를 찾을 수 있다.
+    - 최신 버전의 라이브러리 정보를 가져오면 된다.
+
+build.gradle 파일
+```
+plugins {
+    id 'java'
+    id 'application'
+    id 'eclipse'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+mainClassName = 'App'
+
+dependencies {
+    compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.3.0'
+    compile 'com.google.guava:guava:23.0'
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+    jcenter()
+}
+```
 
 `gradle`을 실행하여 이클립스 설정 파일을 갱신하기
 ```
@@ -110,6 +137,37 @@ $ gradle eclipse
 이클립스 워크스페이스의 프로젝트를 갱신하기
 > 이클립스에서도 프로젝트에 `Refresh`를 수행해야 라이브러리가 적용된다.
 
+### 과제: 수업 데이터를 데이터베이스를 사용하여 관리하라.
+
+- `com.eomcs.lms.proxy` ==> `com.eomcs.lms.dao` 패키지 이름 변경
+    - `proxy` 패키지명 대신에 데이터를 처리하는 객체를 두는 패키지라는 의미로 `dao` 라는 이름으로 변경한다.
+- `LessonDaoProxy.java` ==> `LessonDao.java` 이름 변경
+    - JDBC API를 사용하여 DB 서버에 데이터를 보관하고 꺼낸다.
+    - 클래스 이름에서 `Proxy`를 뺀다.
+- `MemberDaoProxy.java` ==> `MemberDao.java` 이름 변경
+    - JDBC API를 사용하여 DB 서버에 데이터를 보관하고 꺼낸다.
+    - 클래스 이름에서 `Proxy`를 뺀다.
+- `BoardDaoProxy.java` ==> `BoardDao.java` 이름 변경
+    - JDBC API를 사용하여 DB 서버에 데이터를 보관하고 꺼낸다.
+    - 클래스 이름에서 `Proxy`를 뺀다.
+- DataLoaderListener.java
+    - 애플리케이션이 시작할 때 MariaDB 데이터베이스 서버에 연결한다.
+    - 애플리케이션이 종료할 때 MariaDB 데이터베이스 서버와 연결을 끊는다.
+    - DAO 객체를 생성할 때 Connection 객체를 파라미터로 제공한다.
+- App.java
+    - 파일에서 데이터를 로딩하는 일을 했던 `DataLoaderListener`는 제거한다.
+    - DB 연결을 준비하는 `JdbcContextListener`를 추가한다.
+    - 서블릿 객체를 생성할 때 `List` 대신 `Connection` 객체를 넘겨준다.
+- LessonListServlet.java
+    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에서 데이터를 꺼내온다.
+- LessonDetailServlet.java
+    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에서 해당 번호의 데이터를 꺼내온다.
+- LessonAddServlet.java
+    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 DB에 데이터를 저장한다.
+- LessonUpdateServlet.java
+    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 해당 번호의 DB 데이터를 변경한다.
+- LessonDeleteServlet.java
+    - `App` 객체로부터 받은 `Connection` 객체를 사용하여 해당 번호의 DB 데이터를 삭제한다.
 
 #### 실행 결과
 

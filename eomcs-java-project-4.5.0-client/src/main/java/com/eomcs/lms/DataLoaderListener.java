@@ -2,9 +2,9 @@ package com.eomcs.lms;
 
 import java.util.Map;
 import com.eomcs.context.ApplicationContextListener;
-import com.eomcs.lms.proxy.BoardDaoProxy;
-import com.eomcs.lms.proxy.LessonDaoProxy;
-import com.eomcs.lms.proxy.MemberDaoProxy;
+import com.eomcs.lms.dao.BoardDao;
+import com.eomcs.lms.dao.LessonDao;
+import com.eomcs.lms.dao.MemberDao;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -17,9 +17,9 @@ public class DataLoaderListener implements ApplicationContextListener {
       String host = "localhost";
       int port = 8888;
       
-      context.put("lessonDao", new LessonDaoProxy(host, port));
-      context.put("memberDao", new MemberDaoProxy(host, port));
-      context.put("boardDao", new BoardDaoProxy(host, port));
+      context.put("lessonDao", new LessonDao(host, port));
+      context.put("memberDao", new MemberDao(host, port));
+      context.put("boardDao", new BoardDao(host, port));
       
     } catch (Exception e) {
       System.out.println("서버 연결 오류!");

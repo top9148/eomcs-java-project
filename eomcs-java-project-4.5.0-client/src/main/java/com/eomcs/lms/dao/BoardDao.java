@@ -1,17 +1,17 @@
-package com.eomcs.lms.proxy;
+package com.eomcs.lms.dao;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Date;
-import com.eomcs.lms.domain.Lesson;
+import com.eomcs.lms.domain.Board;
 
-public class LessonDaoProxy {
+public class BoardDao {
 
   String host;
   int port;
 
-  public LessonDaoProxy(String host, int port) {
+  public BoardDao(String host, int port) {
     this.host = host;
     this.port = port;
   }
@@ -21,7 +21,8 @@ public class LessonDaoProxy {
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
         ) {
-      out.writeUTF("/lesson/delete");
+
+      out.writeUTF("/board/delete");
       out.writeInt(no);
       out.flush();
 
@@ -29,17 +30,17 @@ public class LessonDaoProxy {
         return 1;
       } else {
         return 0;
-      }    
+      }
     }
   }
 
-  public int update(Lesson lesson) throws Exception {
+  public int update(Board board) throws Exception {
     try (Socket socket = new Socket(host, port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
         ) {
-      out.writeUTF("/lesson/update");
-      out.writeObject(lesson);
+      out.writeUTF("/board/update");
+      out.writeObject(board);
       out.flush();
 
       if (in.readUTF().equals("ok")) {
@@ -50,13 +51,13 @@ public class LessonDaoProxy {
     }
   }
 
-  public int add(Lesson lesson) throws Exception {
+  public int add(Board board) throws Exception {
     try (Socket socket = new Socket(host, port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
         ) {
-      out.writeUTF("/lesson/add");
-      out.writeObject(lesson);
+      out.writeUTF("/board/add");
+      out.writeObject(board);
       out.flush();
 
       if (in.readUTF().equals("ok")) {
@@ -67,33 +68,33 @@ public class LessonDaoProxy {
     }
   }
 
-  public Lesson[] list() throws Exception {
+  public Board[] list() throws Exception {
     try (Socket socket = new Socket(host, port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
         ) {
-      out.writeUTF("/lesson/list");
+      out.writeUTF("/board/list");
       out.flush();
 
       if (in.readUTF().equals("ok")) {
-        return (Lesson[]) in.readObject();
+        return (Board[]) in.readObject();
       } else {
         return null;
       }
     }
   }
 
-  public Lesson detail(int no) throws Exception {
+  public Board detail(int no) throws Exception {
     try (Socket socket = new Socket(host, port);
         ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
         ObjectInputStream in = new ObjectInputStream(socket.getInputStream()); 
         ) {
-      out.writeUTF("/lesson/detail");
+      out.writeUTF("/board/detail");
       out.writeInt(no);
       out.flush();
 
       if (in.readUTF().equals("ok")) {
-        return (Lesson) in.readObject();
+        return (Board) in.readObject();
       } else {
         return null;
       }
@@ -101,36 +102,34 @@ public class LessonDaoProxy {
   }
 
   public static void main(String[] args) throws Exception {
-    LessonDaoProxy lessonDao = new LessonDaoProxy("localhost", 8888);
+    BoardDao boardDao = new BoardDao("localhost", 8888);
 
-    Lesson lesson = new Lesson();
-    lesson.setNo(3);
-    lesson.setTitle("자바 기초 과정");
-    lesson.setContents("자바 기초 문법 강의입니다.");
-    lesson.setStartDate(Date.valueOf("2019-1-1"));
-    lesson.setEndDate(Date.valueOf("2019-2-15"));
-    lesson.setTotalHours(80);
-    lesson.setDayHours(8);
 
-    lessonDao.add(lesson);
+    Board board = new Board();
+    board.setNo(3);
+    board.setContents("내용입니다.");
+    board.setViewCount(0);
+    board.setCreatedDate(new Date(System.currentTimeMillis()));
 
-    lesson = new Lesson();
-    lesson.setNo(3);
-    lesson.setTitle("자바 기초 과정x");
-    lesson.setContents("자바 기초 문법 강의입니다.x");
-    lesson.setStartDate(Date.valueOf("2019-1-3"));
-    lesson.setEndDate(Date.valueOf("2019-2-18"));
-    lesson.setTotalHours(81);
-    lesson.setDayHours(9);
+    boardDao.add(board);
 
-    lessonDao.update(lesson);
 
-    System.out.println(lessonDao.detail(3));
 
-    lessonDao.delete(3);
+    board = new Board();
+    board.setNo(3);
+    board.setContents("내용입니다.x");
+    board.setViewCount(10);
+    board.setCreatedDate(new Date(System.currentTimeMillis()));
 
-    Lesson[] lessons = lessonDao.list();
-    for (Lesson b : lessons) {
+    boardDao.update(board);
+
+
+    System.out.println(boardDao.detail(3));
+
+    boardDao.delete(3);
+
+    Board[] boards = boardDao.list();
+    for (Board b : boards) {
       System.out.println(b);
     }
   }

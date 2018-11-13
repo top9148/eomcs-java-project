@@ -7,6 +7,9 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 import com.eomcs.context.ApplicationContextListener;
+import com.eomcs.lms.dao.BoardDao;
+import com.eomcs.lms.dao.LessonDao;
+import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -23,9 +26,6 @@ import com.eomcs.lms.handler.MemberDeleteCommand;
 import com.eomcs.lms.handler.MemberDetailCommand;
 import com.eomcs.lms.handler.MemberListCommand;
 import com.eomcs.lms.handler.MemberUpdateCommand;
-import com.eomcs.lms.proxy.BoardDaoProxy;
-import com.eomcs.lms.proxy.LessonDaoProxy;
-import com.eomcs.lms.proxy.MemberDaoProxy;
 
 public class App {
   
@@ -48,7 +48,7 @@ public class App {
     Map<String,Command> commandMap = new HashMap<>();
 
     // 핸들러가 사용할 DAO 프록시 객체는 context에서 꺼내 준다.
-    LessonDaoProxy lessonDao = (LessonDaoProxy) context.get("lessonDao");
+    LessonDao lessonDao = (LessonDao) context.get("lessonDao");
     
     commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonDao));
     commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonDao));
@@ -56,7 +56,7 @@ public class App {
     commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonDao));
     commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonDao));
     
-    MemberDaoProxy memberDao = (MemberDaoProxy) context.get("memberDao");
+    MemberDao memberDao = (MemberDao) context.get("memberDao");
     
     commandMap.put("/member/add", new MemberAddCommand(keyboard, memberDao));
     commandMap.put("/member/list", new MemberListCommand(keyboard, memberDao));
@@ -64,7 +64,7 @@ public class App {
     commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberDao));
     commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberDao));
     
-    BoardDaoProxy boardDao = (BoardDaoProxy) context.get("boardDao");
+    BoardDao boardDao = (BoardDao) context.get("boardDao");
     
     commandMap.put("/board/add", new BoardAddCommand(keyboard, boardDao));
     commandMap.put("/board/list", new BoardListCommand(keyboard, boardDao));
