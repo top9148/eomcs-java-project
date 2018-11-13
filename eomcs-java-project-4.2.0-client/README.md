@@ -1,4 +1,4 @@
-# eomcs-java-project-4.1-client
+# eomcs-java-project-4.2-client
 
 동일한 자원으로 더 많은 클라이언트의 요청을 처리하는 방법
 
@@ -11,7 +11,7 @@
 
 서버에 연결하면 한 번만 요청하고 서버의 응답을 받은 후 즉시 연결을 끊는다.
 
-#### ver 4.1.0
+#### ver 4.2.0
 
 - LessonDaoProxy.java
   - 생성자의 파라미터를 서버와 포트 번호를 받도록 변경한다.
