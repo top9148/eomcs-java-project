@@ -14,6 +14,12 @@ public class Member implements Cloneable, Serializable {
   private Date registeredDate;
   
   @Override
+  public String toString() {
+    return "Member [no=" + no + ", name=" + name + ", email=" + email + ", password=" + password
+        + ", photo=" + photo + ", tel=" + tel + ", registeredDate=" + registeredDate + "]";
+  }
+  
+  @Override
   public Member clone() throws CloneNotSupportedException {
     return (Member) super.clone();
   }
@@ -60,6 +66,7 @@ public class Member implements Cloneable, Serializable {
   public void setRegisteredDate(Date registeredDate) {
     this.registeredDate = registeredDate;
   }
+
   
   
 }

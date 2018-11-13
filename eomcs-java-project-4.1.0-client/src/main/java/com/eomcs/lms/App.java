@@ -2,15 +2,11 @@ package com.eomcs.lms;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 import com.eomcs.context.ApplicationContextListener;
-import com.eomcs.lms.domain.Board;
-import com.eomcs.lms.domain.Lesson;
-import com.eomcs.lms.domain.Member;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -27,6 +23,9 @@ import com.eomcs.lms.handler.MemberDeleteCommand;
 import com.eomcs.lms.handler.MemberDetailCommand;
 import com.eomcs.lms.handler.MemberListCommand;
 import com.eomcs.lms.handler.MemberUpdateCommand;
+import com.eomcs.lms.proxy.BoardDaoProxy;
+import com.eomcs.lms.proxy.LessonDaoProxy;
+import com.eomcs.lms.proxy.MemberDaoProxy;
 
 public class App {
   
@@ -40,9 +39,7 @@ public class App {
   Stack<String> commandHistory = new Stack<>();
   Queue<String> commandHistory2 = new LinkedList<>();
   
-  @SuppressWarnings("unchecked")
   public void service() {
-    
     // 서비스를 실행하기 전에 등록된 모든 Observer를 호출하여 시작을 알린다.
     for (ApplicationContextListener listener : applicationContextListeners) {
       listener.contextInitialized(context);
@@ -50,27 +47,30 @@ public class App {
     
     Map<String,Command> commandMap = new HashMap<>();
 
-    // 핸들러가 사용할 데이터는 context에서 꺼내 준다.
-    List<Lesson> lessonList = (List<Lesson>) context.get("lessonList");
-    commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonList));
-    commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonList));
-    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard, lessonList));
-    commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonList));
-    commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonList));
-
-    List<Member> memberList = (List<Member>) context.get("memberList");
-    commandMap.put("/member/add", new MemberAddCommand(keyboard, memberList));
-    commandMap.put("/member/list", new MemberListCommand(keyboard, memberList));
-    commandMap.put("/member/detail", new MemberDetailCommand(keyboard, memberList));
-    commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberList));
-    commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberList));
+    // 핸들러가 사용할 DAO 프록시 객체는 context에서 꺼내 준다.
+    LessonDaoProxy lessonDao = (LessonDaoProxy) context.get("lessonDao");
     
-    List<Board> boardList = (List<Board>) context.get("boardList");
-    commandMap.put("/board/add", new BoardAddCommand(keyboard, boardList));
-    commandMap.put("/board/list", new BoardListCommand(keyboard, boardList));
-    commandMap.put("/board/detail", new BoardDetailCommand(keyboard, boardList));
-    commandMap.put("/board/update", new BoardUpdateCommand(keyboard, boardList));
-    commandMap.put("/board/delete", new BoardDeleteCommand(keyboard, boardList));
+    commandMap.put("/lesson/add", new LessonAddCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/list", new LessonListCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/detail", new LessonDetailCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/update", new LessonUpdateCommand(keyboard, lessonDao));
+    commandMap.put("/lesson/delete", new LessonDeleteCommand(keyboard, lessonDao));
+    
+    MemberDaoProxy memberDao = (MemberDaoProxy) context.get("memberDao");
+    
+    commandMap.put("/member/add", new MemberAddCommand(keyboard, memberDao));
+    commandMap.put("/member/list", new MemberListCommand(keyboard, memberDao));
+    commandMap.put("/member/detail", new MemberDetailCommand(keyboard, memberDao));
+    commandMap.put("/member/update", new MemberUpdateCommand(keyboard, memberDao));
+    commandMap.put("/member/delete", new MemberDeleteCommand(keyboard, memberDao));
+    
+    BoardDaoProxy boardDao = (BoardDaoProxy) context.get("boardDao");
+    
+    commandMap.put("/board/add", new BoardAddCommand(keyboard, boardDao));
+    commandMap.put("/board/list", new BoardListCommand(keyboard, boardDao));
+    commandMap.put("/board/detail", new BoardDetailCommand(keyboard, boardDao));
+    commandMap.put("/board/update", new BoardUpdateCommand(keyboard, boardDao));
+    commandMap.put("/board/delete", new BoardDeleteCommand(keyboard, boardDao));
     
     while (true) {
       String command = prompt();

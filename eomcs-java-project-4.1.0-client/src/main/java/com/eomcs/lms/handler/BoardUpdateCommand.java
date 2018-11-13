@@ -1,16 +1,16 @@
 package com.eomcs.lms.handler;
-import java.util.List;
 import java.util.Scanner;
 import com.eomcs.lms.domain.Board;
+import com.eomcs.lms.proxy.BoardDaoProxy;
 
 public class BoardUpdateCommand implements Command {
   
   Scanner keyboard;
-  List<Board> list;
+  BoardDaoProxy boardDao;
   
-  public BoardUpdateCommand(Scanner keyboard, List<Board> list) {
+  public BoardUpdateCommand(Scanner keyboard, BoardDaoProxy boardDao) {
     this.keyboard = keyboard;
-    this.list = list;
+    this.boardDao = boardDao;
   }
   
   @Override
@@ -18,38 +18,23 @@ public class BoardUpdateCommand implements Command {
     System.out.print("번호? ");
     int no = Integer.parseInt(keyboard.nextLine());
 
-    int index = indexOfBoard(no);
-    if (index == -1) {
-      System.out.println("해당 게시글을 찾을 수 없습니다.");
-      return;
-    }
-    
-    Board board = list.get(index);
-    
     try {
-      // 기존 값 복제
-      Board temp = board.clone();
+      Board board = boardDao.detail(no);
+      if (board == null) { 
+        System.out.println("해당 게시글을 찾을 수 없습니다.");
+        return;
+      }
       
       System.out.printf("내용? ");
       String input = keyboard.nextLine();
       if (input.length() > 0) 
-        temp.setContents(input);
+        board.setContents(input);
       
-      list.set(index, temp);
-      
+      boardDao.update(board);
       System.out.println("게시글을 변경했습니다.");
       
     } catch (Exception e) {
-      System.out.println("변경 중 오류 발생!");
+      System.out.printf("%s : %s\n", e.toString(), e.getMessage());
     }
-  }
-  
-  private int indexOfBoard(int no) {
-    for (int i = 0; i < list.size(); i++) {
-      Board b = list.get(i);
-      if (b.getNo() == no)
-        return i;
-    }
-    return -1;
   }
 }

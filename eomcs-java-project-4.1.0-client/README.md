@@ -20,87 +20,79 @@
 
 데이터 관리 부분을 제외한 나머지를 클라이언트로 만들라.
 
+- Lesson.java, Member.java, Board.java
+  - 테스트 할 때 객체의 필드 값을 확인할 수 있도록 toString()을 오버라이딩 한다.
+- com.eomcs.lms.proxy
+  - 서버쪽의 DAO와 통신을 담당할 Proxy 클래스를 둘 패키지를 생성한다.
+- LessonDaoProxy.java
+  - 서버의 `LessonDao`와 통신하는 부분을 캡슐화한다.
+  - `Proxy` 디자인 패턴을 응용하여 클라이언트 측에서 서버의 `LessonDao` 객체를 대행하게 한다.
+- MemberDaoProxy.java
+  - 서버의 `MemberDao`와 통신하는 부분을 캡슐화한다.
+  - `Proxy` 디자인 패턴을 응용하여 클라이언트 측에서 서버의 `MemberDao` 객체를 대행하게 한다.
+- BoardDaoProxy.java
+  - 서버의 `BoardDao`와 통신하는 부분을 캡슐화한다.
+  - `Proxy` 디자인 패턴을 응용하여 클라이언트 측에서 서버의 `BoardDao` 객체를 대행하게 한다.  
+- DataLoaderListener.java
+  - 애플리케이션을 시작할 때 DAO Proxy를 준비한다.
+  - 애플리케이션을 종료할 때 서버에 종료 명령을 보낸 후 소켓을 닫는다.
+- XxxCommand.java
+  - 생성자에서 List 대신 DAO Proxy를 받아 데이터를 처리한다.
 - App.java
-    - `App.java` 파일을 복사해서 `ClientApp.java`를 만든다.
-    - 파일에서 데이터를 로딩하는 코드를 제거한다.
-    - `Observer` 등록 및 실행 코드를 제거한다.
-    - 사용자로부터 명령을 입력 받아서 서버로 전송한다.
-    - 서버로부터 받은 데이터를 화면에 출력한다.
-    - 입력 명령의 기록은 Stack에만 보관한다.
+  - 파일에서 데이터를 로딩하는 코드를 제거한다.
+  - 커맨드 객체의 변경에 맞춰 코드를 변경한다.
 
 #### 실행 결과
 
-먼저 `ServerApp`을 실행한다.
+서버 애플리케이션의 `ServerApp`을 먼저 실행한다.
 ```
-서버 실행 중!
-데이터를 읽어옵니다.
+수업 데이터를 로딩 성공!
+회원 데이터를 로딩 성공!
+게시글 데이터를 로딩 성공!
+서버 시작!
+.
+.
+.
+클라이언트와 연결되었음.
 ```
 
-`ClientApp`을 실행한다. 수업에 대해 CRUD 테스트를 한다.
+클라이언트 애플리케이션의 `App`을 실행한다. 실행은 이전 버전과 같다.
 ```
 명령> /lesson/list
-  1, 1              , 2019-01-01 ~ 2019-02-02,    1
-  2, 2              , 2019-02-02 ~ 2019-03-03,    2
-  3, 3              , 2019-03-03 ~ 2019-04-04,  100
+  1, 과정1x           , 2019-01-02 ~ 2019-01-16, 1001
+  2, 과정2            , 2019-02-01 ~ 2019-02-15, 1000
 
-명령> /lesson/add?n=4&t=자바프로그래밍&c=자바 기본 문법 설명&sd=2019-1-1&ed=2019-3-3&th=100&dh=8
-저장하였습니다.
-
-명령> /lesson/list
-  1, 1              , 2019-01-01 ~ 2019-02-02,    1
-  2, 2              , 2019-02-02 ~ 2019-03-03,    2
-  3, 3              , 2019-03-03 ~ 2019-04-04,  100
-  4, 자바프로그래밍        , 2019-01-01 ~ 2019-03-03,  100
-
-명령> /lesson/detail?n=4
-수업명: 자바프로그래밍
-설명: 자바 기본 문법 설명
-기간: 2019-01-01 ~ 2019-03-03
-총수업시간: 100
-일수업시간: 8
-
-명령> /lesson/update?n=4&t=자바프로그래밍x&c=자바 기본 문법 설명x&sd=2019-1-2&ed=2019-3-4&th=101&dh=9
-수업을 변경했습니다.
-
-명령> /lesson/detail?n=4
-수업명: 자바프로그래밍x
-설명: 자바 기본 문법 설명x
-기간: 2019-01-02 ~ 2019-03-04
-총수업시간: 101
-일수업시간: 9
-
-명령> /lesson/delete?n=4
-수업을 삭제했습니다.
+명령> /lesson/add
+번호? 3
+수업명? 과정3
+설명? 설명입니다.
+시작일? 2019-1-1
+종료일? 2019-2-5
+총수업시간? 120
+일수업시간? 8
+수업을 저장했습니다.
 
 명령> /lesson/list
-  1, 1              , 2019-01-01 ~ 2019-02-02,    1
-  2, 2              , 2019-02-02 ~ 2019-03-03,    2
-  3, 3              , 2019-03-03 ~ 2019-04-04,  100
+  1, 과정1x           , 2019-01-02 ~ 2019-01-16, 1001
+  2, 과정2            , 2019-02-01 ~ 2019-02-15, 1000
+  3, 과정3            , 2019-01-01 ~ 2019-02-05,  120
 
 명령> 
+.
+.
+.
 ```
 
 
 ## 실습 소스
 
-- src/main/java/com/eomcs/lms/servlet 패키지 생성
-- src/main/java/com/eomcs/lms/servlet/Servlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/LessonAddServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/LessonDeleteServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/LessonDetailServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/LessonListServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/LessonUpdateServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/MemberAddServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/MemberDeleteServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/MemberDetailServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/MemberListServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/MemberUpdateServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/BoardAddServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/BoardDeleteServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/BoardDetailServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/BoardListServlet.java 추가
-- src/main/java/com/eomcs/lms/servlet/BoardUpdateServlet.java 추가
-- src/main/java/com/eomcs/lms/ClientApp.java 추가
-- src/main/java/com/eomcs/lms/ServerApp.java 추가
-- src/main/java/com/eomcs/lms/handler 패키지 및 하위 클래스 모두 삭제
-- src/main/java/com/eomcs/lms/App.java 삭제
+- src/main/java/com/eomcs/lms/domain/Lesson.java 변경
+- src/main/java/com/eomcs/lms/domain/Member.java 변경
+- src/main/java/com/eomcs/lms/domain/Board.java 변경
+- src/main/java/com/eomcs/lms/proxy 패키지 추가
+- src/main/java/com/eomcs/lms/proxy/LessonDaoProxy 추가
+- src/main/java/com/eomcs/lms/proxy/MemberDaoProxy 추가
+- src/main/java/com/eomcs/lms/proxy/BoardDaoProxy 추가
+- src/main/java/com/eomcs/lms/DataLoaderListener.java 변경 
+- src/main/java/com/eomcs/lms/handler/XxxCommand.java 변경
+- src/main/java/com/eomcs/lms/App.java 변경

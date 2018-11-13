@@ -11,6 +11,12 @@ public class Board implements Cloneable, Serializable {
   private int viewCount;
   
   @Override
+  public String toString() {
+    return "Board [no=" + no + ", contents=" + contents + ", createdDate=" + createdDate
+        + ", viewCount=" + viewCount + "]";
+  }
+
+  @Override
   public Board clone() throws CloneNotSupportedException {
     return (Board) super.clone();
   }
