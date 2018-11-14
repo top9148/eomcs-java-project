@@ -20,32 +20,46 @@ public class ClientApp {
   }
 
   public void service() throws Exception {
-    try (Socket socket = new Socket(host, port);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()))) {
-
-      while (true) {
-        String command = prompt();
+    while (true) {
+      String command = prompt();
+      
+      if (command.equals("quit"))
+        break;
+      
+      try (Socket socket = new Socket(host, port);
+          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+          PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+        
+        //System.out.println("서버와 연결됨.");
+        
+        //System.out.printf("%s 명령 처리중...\n", command);
+        
         out.println(command);
         out.flush();
 
-        if (command.equals("quit") || command.equals("shutdown"))
+        if (command.equals("shutdown"))
           break;
 
         while (true) {
           String responseText = in.readLine();
-          
+
           if (responseText.equals("!end!")) {
             break;
-          
+
           } else if (responseText.equals("!{}!")) {
             out.println(keyboard.nextLine());
             out.flush();
-          
+
           } else {
             System.out.println(responseText);
           }
         }
+        
+      } catch (Exception e) {
+        System.out.println("서버와 통신 중 오류 발생!");
+        
+      } finally {
+        //System.out.println("서버와 연결 끊음.");
       }
     }
   }

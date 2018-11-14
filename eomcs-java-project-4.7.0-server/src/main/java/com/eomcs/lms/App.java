@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import com.eomcs.context.ApplicationContextListener;
 import com.eomcs.lms.dao.BoardDao;
 import com.eomcs.lms.dao.LessonDao;
@@ -46,7 +48,14 @@ public class App {
 
   // 서버 포트 번호
   int port;
+  ServerSocket serverSocket;
 
+  // 클라이언트 명령을 처리할 객체 맵
+  Map<String,Command> commandMap = new HashMap<>();
+
+  //스레드 풀
+  ExecutorService executorService = Executors.newCachedThreadPool();
+  
   public App(int port) {
     this.port = port;
   }
@@ -56,8 +65,6 @@ public class App {
     for (ApplicationContextListener listener : applicationContextListeners) {
       listener.contextInitialized(context);
     }
-
-    Map<String,Command> commandMap = new HashMap<>();
 
     // 핸들러가 사용할 DAO 프록시 객체는 context에서 꺼내 준다.
     LessonDao lessonDao = (LessonDao) context.get("lessonDao");
@@ -94,58 +101,37 @@ public class App {
     commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao));
     
     // 클라이언트와 연결할 준비하기
-    ServerSocket serverSocket = new ServerSocket(port);
+    serverSocket = new ServerSocket(port);
     System.out.println("서버 실행!");
-    
-    loop0:
+
     while (true) {
-      try (Socket socket = serverSocket.accept();
-          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-          PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()))) {
-        
-        System.out.println("클라이언트와 연결됨.");
-        
-        while (true) {
-          String command = in.readLine();
-          System.out.println("클라이언트와 요청 처리 중...");
-
-          // 사용자가 입력한 명령으로 Command 객체를 찾는다.
-          Command commandHandler = commandMap.get(command);
-
-          if (commandHandler != null) {
-            try {
-              commandHandler.execute(in, out);
-            } catch (Exception e) {
-              out.println("명령어 실행 중 오류 발생 : " + e.toString());
-            }
-          } else if (command.equals("quit")) {
-            break;
-
-          } else if (command.equals("shutdown")) {
-            break loop0;
-
-          } else {
-            out.println("실행할 수 없는 명령입니다.");
-          }
-
-          // 서버의 응답이 끝났음을 알린다. 
-          out.println("\n!end!");
-          out.flush();
-        }
+      try {
+        // 스레드풀에 작업을 전달한다.
+        executorService.submit(new RequestHandler(serverSocket.accept()));
       } catch (Exception e) {
-        System.out.println("클라이언트와 통신중 오류 발생: " + e.getMessage());
-      } finally {
-        System.out.println("클라이언트와 연결 종료!");
+        // 클라이언트와 연결하다거 오류가 발생한 경우 무시한다.
       }
     }
-
-    // 서비스를 종료하기 전에 등록된 모든 Observer를 호출하여 종료를 알린다.
-    for (ApplicationContextListener listener : applicationContextListeners) {
-      listener.contextDestroyed(context);
-    }
     
-    serverSocket.close();
-    System.out.println("서버 종료!");
+  }
+  
+  private void shutdown() {
+    try {
+      // 스레드풀의 자원을 해제한다.
+      executorService.shutdown();
+      
+      // 서비스를 종료하기 전에 등록된 모든 Observer를 호출하여 종료를 알린다.
+      for (ApplicationContextListener listener : applicationContextListeners) {
+        listener.contextDestroyed(context);
+      }
+  
+      serverSocket.close();
+      System.out.println("서버 종료!");
+    } catch (Exception e) {
+      // 종료 시에 발생하는 예외는 무시한다.
+    } finally {
+      System.exit(0);
+    }
   }
 
   // Observer를 등록하는 메서드
@@ -161,5 +147,59 @@ public class App {
 
     // App 을 실행한다.
     app.service();
+  }
+
+  class RequestHandler implements Runnable {
+
+    Socket socket;
+
+    public RequestHandler(Socket socket) {
+      System.out.println("클라이언트와 연결되었음.");
+      System.out.println("스레드 생성됨!");
+      this.socket = socket;
+    }
+
+    @Override
+    public void run() {
+      System.out.println("스레드 실행... - " + Thread.currentThread().getName());
+      try (Socket socket = this.socket;
+          BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+          PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()))) {
+
+        String command = in.readLine();
+        
+        // 사용자가 입력한 명령으로 Command 객체를 찾는다.
+        Command commandHandler = commandMap.get(command);
+
+        if (commandHandler != null) {
+          try {
+            commandHandler.execute(in, out);
+          } catch (Exception e) {
+            out.println("명령어 실행 중 오류 발생 : " + e.toString());
+          }
+        } else if (command.equals("shutdown")) {
+          shutdown();
+          return;
+
+        } else {
+          out.println("실행할 수 없는 명령입니다.");
+        }
+
+        // 서버의 응답이 끝났음을 알린다. 
+        out.println("\n!end!");
+        out.flush();
+
+      } catch (Exception e) {
+        System.out.println("클라이언트와 통신중 오류 발생: " + e.getMessage());
+      } finally {
+        System.out.println("클라이언트와 연결 종료!");
+        
+        // 다른 요청이 들어 왔을 때 스레드풀에서 다른 스레드를 통해 처리하는지 확인하기 위해 
+        // 일부로 시간을 지연시킴.
+        //try {Thread.sleep(5000);} catch (Exception e) {}
+        
+        System.out.println("스레드 종료!");
+      }
+    }
   }
 }

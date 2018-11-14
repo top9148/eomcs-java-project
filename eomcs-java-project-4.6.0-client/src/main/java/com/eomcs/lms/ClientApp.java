@@ -34,10 +34,17 @@ public class ClientApp {
 
         while (true) {
           String responseText = in.readLine();
-          if (responseText.equals("!end!"))
+          
+          if (responseText.equals("!end!")) {
             break;
-
-          System.out.println(responseText);
+          
+          } else if (responseText.equals("!{}!")) {
+            out.println(keyboard.nextLine());
+            out.flush();
+          
+          } else {
+            System.out.println(responseText);
+          }
         }
       }
     }
