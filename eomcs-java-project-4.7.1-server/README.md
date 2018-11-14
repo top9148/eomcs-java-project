@@ -28,6 +28,16 @@
 - App.java
     - 사진 게시물 관련 `Command` 객체를 생성하여 커맨드 맵에 보관한다.
 
+### ver 4.7.1 - `수업 사진 게시판`에 사진 파일을 첨부하는 기능을 추가하라.
+
+- PhotoFile.java
+    - 사진 파일의 데이터 타입을 정의한다.
+- PhotoFileDao.java
+    - 사진 파일의 CRUD 관련 메서드를 정의한다.
+- DataLoaderListener.java
+    - `PhotoFileDao` 객체를 생성하여 맵 객체에 보관한다.
+- App.java
+    - 사진 게시물 관련 `Command` 객체를 생성하여 커맨드 맵에 보관한다.
 
 ##### 실행 결과
 
