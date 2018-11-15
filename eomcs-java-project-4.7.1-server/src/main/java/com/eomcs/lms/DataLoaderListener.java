@@ -8,6 +8,7 @@ import com.eomcs.lms.dao.BoardDao;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.dao.PhotoBoardDao;
+import com.eomcs.lms.dao.PhotoFileDao;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -28,6 +29,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("memberDao", new MemberDao(connection));
       context.put("boardDao", new BoardDao(connection));
       context.put("photoBoardDao", new PhotoBoardDao(connection));
+      context.put("photoFileDao", new PhotoFileDao(connection));
       
       
     } catch (Exception e) {

@@ -16,6 +16,12 @@ public class PhotoBoard implements Cloneable, Serializable {
     return "PhotoBoard [no=" + no + ", title=" + title + ", createdDate=" + createdDate
         + ", viewCount=" + viewCount + ", lessonNo=" + lessonNo + "]";
   }
+  
+  @Override
+  public PhotoBoard clone() throws CloneNotSupportedException {
+    return (PhotoBoard) super.clone();
+  }
+  
   public int getNo() {
     return no;
   }

@@ -15,6 +15,7 @@ import com.eomcs.lms.dao.BoardDao;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.dao.PhotoBoardDao;
+import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -93,12 +94,13 @@ public class App {
     commandMap.put("/board/delete", new BoardDeleteCommand(boardDao));
 
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
+    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
     
     commandMap.put("/photoboard/list", new PhotoBoardListCommand(photoBoardDao));
-    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(photoBoardDao));
-    commandMap.put("/photoboard/detail", new PhotoBoardDetailCommand(photoBoardDao));
-    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(photoBoardDao));
-    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao));
+    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(photoBoardDao, photoFileDao));
+    commandMap.put("/photoboard/detail", new PhotoBoardDetailCommand(photoBoardDao, photoFileDao));
+    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(photoBoardDao, photoFileDao));
+    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao, photoFileDao));
     
     // 클라이언트와 연결할 준비하기
     serverSocket = new ServerSocket(port);

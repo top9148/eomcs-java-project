@@ -32,9 +32,17 @@ public class PhotoBoardDao {
 
   public int add(PhotoBoard photo) throws Exception {
     try (Statement stmt = connection.createStatement()) {
-      return stmt.executeUpdate("INSERT INTO PHOTO(TITLE,LNO)"
+      int count = stmt.executeUpdate("INSERT INTO PHOTO(TITLE,LNO)"
           + " VALUES('" + photo.getTitle()
-          + "'," + photo.getLessonNo() + ")");
+          + "'," + photo.getLessonNo() + ")", Statement.RETURN_GENERATED_KEYS);
+      
+      ResultSet rs = stmt.getGeneratedKeys();
+      if (rs.next()) {
+        photo.setNo(rs.getInt(1));
+      }
+      rs.close();
+      
+      return count;
     }
   }
 
