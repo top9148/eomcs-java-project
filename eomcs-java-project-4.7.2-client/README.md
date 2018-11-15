@@ -7,7 +7,7 @@
 
 ## 프로젝트 - 수업관리 시스템  
 
-`eomcs-java-project-4.6.3-client`와 동일하다.
+`eomcs-java-project-4.7.1-client`와 동일하다.
 
 ##### 실행 결과
 
