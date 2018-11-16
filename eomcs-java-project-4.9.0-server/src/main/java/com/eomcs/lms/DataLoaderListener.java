@@ -8,6 +8,7 @@ import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.sql.DataSource;
+import com.eomcs.sql.TransactionManager;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
@@ -26,6 +27,7 @@ public class DataLoaderListener implements ApplicationContextListener {
       context.put("photoBoardDao", new PhotoBoardDao(dataSource));
       context.put("photoFileDao", new PhotoFileDao(dataSource));
       
+      context.put("transactionManager", new TransactionManager(dataSource));
       
     } catch (Exception e) {
       e.printStackTrace();

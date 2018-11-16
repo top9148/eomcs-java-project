@@ -6,15 +6,18 @@ import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
+import com.eomcs.sql.TransactionManager;
 
 public class PhotoBoardAddCommand implements Command {
 
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
+  TransactionManager txManager;
   
-  public PhotoBoardAddCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
+  public PhotoBoardAddCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao, TransactionManager txManager) {
     this.photoBoardDao = photoBoardDao;
     this.photoFileDao = photoFileDao;
+    this.txManager = txManager;
   }
 
   @Override
@@ -51,6 +54,8 @@ public class PhotoBoardAddCommand implements Command {
         }
       }
       
+      txManager.beginTransaction();
+      
       photoBoardDao.add(board);
       
       for (PhotoFile photo : photos) {
@@ -58,9 +63,11 @@ public class PhotoBoardAddCommand implements Command {
         photoFileDao.add(photo);
       }
       
+      txManager.commit();
       out.println("사진을 저장했습니다.");
       
     } catch (Exception e) {
+      txManager.rollback();
       out.printf("%s : %s\n", e.toString(), e.getMessage());
       
     }

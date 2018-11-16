@@ -38,6 +38,7 @@ import com.eomcs.lms.handler.PhotoBoardDeleteCommand;
 import com.eomcs.lms.handler.PhotoBoardDetailCommand;
 import com.eomcs.lms.handler.PhotoBoardListCommand;
 import com.eomcs.lms.handler.PhotoBoardUpdateCommand;
+import com.eomcs.sql.TransactionManager;
 
 public class App {
 
@@ -95,12 +96,13 @@ public class App {
 
     PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
     PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
+    TransactionManager txManager = (TransactionManager) context.get("transactionManager");
     
     commandMap.put("/photoboard/list", new PhotoBoardListCommand(photoBoardDao));
-    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(photoBoardDao, photoFileDao));
+    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(photoBoardDao, photoFileDao, txManager));
     commandMap.put("/photoboard/detail", new PhotoBoardDetailCommand(photoBoardDao, photoFileDao));
-    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(photoBoardDao, photoFileDao));
-    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao, photoFileDao));
+    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(photoBoardDao, photoFileDao, txManager));
+    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao, photoFileDao, txManager));
     
     // 클라이언트와 연결할 준비하기
     serverSocket = new ServerSocket(port);
