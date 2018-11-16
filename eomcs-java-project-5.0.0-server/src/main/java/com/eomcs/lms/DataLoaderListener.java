@@ -12,12 +12,14 @@ import com.eomcs.sql.TransactionManager;
 
 public class DataLoaderListener implements ApplicationContextListener {
 
+  DataSource dataSource;
+  
   @Override
   public void contextInitialized(Map<String,Object> context) {
     System.out.println("DataLoaderListener.contextInitialized() 실행!");
 
     try {
-      DataSource dataSource = new DataSource(
+      dataSource = new DataSource(
           "jdbc:mariadb://localhost:3306/eomcs",
           "eomcs", "1111");
       
@@ -37,5 +39,6 @@ public class DataLoaderListener implements ApplicationContextListener {
   @Override
   public void contextDestroyed(Map<String,Object> context) {
     System.out.println("DataLoaderListener.contextInitialized() 실행!");
+    dataSource.close();
   }
 }

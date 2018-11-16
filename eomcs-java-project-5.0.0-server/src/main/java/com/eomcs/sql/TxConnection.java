@@ -24,12 +24,14 @@ public class TxConnection implements Connection {
   
   boolean isInTransaction;
   Connection connection;
+  ConnectionPool pool;
   
-  public TxConnection(Connection connection) {
-    this(connection, false);
+  public TxConnection(ConnectionPool pool, Connection connection) {
+    this(pool, connection, false);
   }
   
-  public TxConnection(Connection connection, boolean isInTransaction) {
+  public TxConnection(ConnectionPool pool, Connection connection, boolean isInTransaction) {
+    this.pool = pool;
     this.connection = connection;
     this.isInTransaction = isInTransaction;
   }
@@ -41,7 +43,7 @@ public class TxConnection implements Connection {
   public void setInTransaction(boolean isInTransaction) {
     this.isInTransaction = isInTransaction;
   }
-
+  
   public Connection getOriginalConnection() {
     return this.connection;
   }
@@ -51,7 +53,8 @@ public class TxConnection implements Connection {
     if (isInTransaction)
       return;
     
-    connection.close();
+    // close()를 호출하면 커넥션을 끊지 말고 커넥션풀에 되돌려준다.
+    pool.returnConnection(this);
   }
   
   public void forceClose() throws Exception {

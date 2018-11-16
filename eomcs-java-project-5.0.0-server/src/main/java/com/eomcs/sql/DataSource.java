@@ -2,14 +2,17 @@ package com.eomcs.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 
-public class DataSource {
+public class DataSource implements ConnectionPool {
   
   String jdbcUrl;
   String username;
   String password;
   
-  ThreadLocal<Connection> connectionLocal = new ThreadLocal<>();
+  ThreadLocal<TxConnection> connectionLocal = new ThreadLocal<>();
+  
+  ArrayList<Connection> pool = new ArrayList<>();
   
   public DataSource(String jdbcUrl, String username, String password) {
     this.jdbcUrl = jdbcUrl;
@@ -20,17 +23,37 @@ public class DataSource {
   public Connection getConnection() throws Exception {
     Connection connection = null;
     
-    // 트랜잭션에 소속된 작업이 아닌 경우 DB 커넥션을 새로 만들어 리턴한다.
+    // 트랜잭션에 소속된 작업이 아닌 경우, 
     if (connectionLocal.get() == null) {
-      System.out.printf("[%s] - DB 커넥션 생성\n", Thread.currentThread().getName());
-      connection = new TxConnection(DriverManager.getConnection(jdbcUrl, username, password));
+
+      if (pool.size() == 0) { // 커넥션풀이 비어 있다면 DB 커넥션을 새로 만들어 리턴한다. 
+        System.out.printf("[%s] - DB 커넥션 생성\n", Thread.currentThread().getName());
+        connection = new TxConnection(this, DriverManager.getConnection(jdbcUrl, username, password));
+      
+      } else { // 커넥션풀에 커넥션객체가 들어 있다면 꺼낸다.
+        System.out.printf("[%s] - 커넥션풀에서 DB 커넥션을 꺼냄\n", Thread.currentThread().getName());
+        return pool.remove(0);
+      }
       
     } else { // 트랜잭션에 소속된 작업의 경우 ThreadLocal에 저장된 커넥션을 꺼내 리턴한다.
-      System.out.printf("[%s] - ThreadLocal의 DB 커넥션 리턴\n", Thread.currentThread().getName());
+      System.out.printf("[%s] - ThreadLocal의 DB 커넥션\n", Thread.currentThread().getName());
       connection = connectionLocal.get();
     }
     
     return connection;
+  }
+  
+  @Override
+  public void returnConnection(Connection connection) {
+    System.out.println("커넥션풀에 DB 커넥션을 반납");
+    pool.add(connection);
+  }
+  
+  public void close() {
+    System.out.println("DataSource.close() - 커넥션풀에 있는 모든 커넥션을 닫는다.");
+    for (Connection con : pool) {
+      try {((TxConnection)con).forceClose();} catch (Exception e) {} 
+    }
   }
   
   // 트랜잭션을 시작하면 DB 커넥션을 꺼내기 전에 미리 생성하여 ThreadLocal 변수에 보관한다. 
@@ -45,18 +68,26 @@ public class DataSource {
     con.setAutoCommit(false);
     
     connectionLocal.set(con);
-    System.out.printf("[%s] - ThreadLocal <=== DB 커넥션 보관\n", Thread.currentThread().getName());
+    System.out.printf("[%s] - ThreadLocal <=== DB 커넥션풀\n", Thread.currentThread().getName());
   }
   
   // 트랜잭션을 종료하면 ThreadLocal에 보관된 DB 커넥션 객체를 제거한다.
   public void endTransaction() {
-    System.out.printf("[%s] - ThreadLocal ===> DB 커넥션 제거\n", Thread.currentThread().getName());
+    System.out.printf("[%s] - ThreadLocal ===> DB 커넥션풀\n", Thread.currentThread().getName());
     
-    Connection con = connectionLocal.get();
-    try {con.close();} catch (Exception e) {}
-    
-    connectionLocal.remove();
+    try {
+      TxConnection con = connectionLocal.get();
+      con.setInTransaction(false);
+      con.setAutoCommit(true);
+      con.close();
+      connectionLocal.remove();
+
+    } catch (Exception e) {
+      // 예외 무시!
+    }
   }
+  
+  
   
   public static void main(String[] args) throws Exception {
     DataSource ds = new DataSource("jdbc:mariadb://localhost:3306/eomcs",
