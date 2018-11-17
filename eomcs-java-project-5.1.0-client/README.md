@@ -1,12 +1,12 @@
-# eomcs-java-project-5.0-client
+# eomcs-java-project-5.1-client
 
-커넥션 재사용을 위해 커넥션풀 적용하기
+DB 프로그래밍 더 쉽고 간단히 하는 방법
 
-- 커넥션풀의 동작 원리와 사용해야 하는 이유
+- MyBatis SQL 맵퍼 프레임워크의 특징과 사용법
 
 ## 프로젝트 - 수업관리 시스템  
 
-`eomcs-java-project-4.9.0-client`와 동일하다.
+`eomcs-java-project-5.0.0-client`와 동일하다.
 
 ##### 실행 결과
 
