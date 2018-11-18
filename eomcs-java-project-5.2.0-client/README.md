@@ -1,13 +1,12 @@
-# eomcs-java-project-5.1-client
+# eomcs-java-project-5.2-client
 
-SQL 삽입 공격과 자바 시큐어 코딩
+DB 프로그래밍 더 쉽고 간단히 하는 방법
 
-- SQL 삽입 공격과 그 방어법
-- Statement와 PreparedStatement 특징 비교
+- MyBatis SQL 맵퍼 프레임워크의 특징과 사용법
 
 ## 프로젝트 - 수업관리 시스템  
 
-`eomcs-java-project-5.0.0-client`와 동일하다.
+`eomcs-java-project-5.1.0-client`와 동일하다.
 
 ##### 실행 결과
 
