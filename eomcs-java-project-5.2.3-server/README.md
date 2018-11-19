@@ -9,7 +9,7 @@ DB 프로그래밍 더 쉽고 간단히 하는 방법
 
 퍼시스턴스 프레임워크인 `MyBatis`를 사용하여 JDBC 프로그래밍의 번거로움에서 벗어나자. MyBatis는 자바 소스코드에서 SQL을 분리하여 관리한다. 자바 코드와 SQL이 분리되어 있어서 코드를 읽기 쉽고 유지보수하기 편한다. 또한 JDBC 프로그래밍 코드를 캡슐화하였기 때문에 유사한 코드를 반복 작성할 필요가 없다.
 
-### ver 5.2.0 - `LessonDao`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
+### ver 5.2.0 - `LessonDAO`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
 
 #### 1단계) 프로젝트에 MyBatis 라이브러리를 추가한다.
 
@@ -33,7 +33,8 @@ DB 프로그래밍 더 쉽고 간단히 하는 방법
 
 - com/eomcs/lms/mapper/LessonMapper.xml (LessonMapper.xml.01)
     - `LessonDao`의 list()에서 사용할 SQL을 이 파일에 둔다.
-- `mybatis-config.xml` 설정 파일에 SQL 매퍼 파일 `LessonMapper.xml`을 등록한다.
+- mybatis-config.xml
+    - 설정 파일에 SQL 매퍼 파일 `LessonMapper.xml`을 등록한다.
   
 #### 4단계) MyBatis 관련 자바 객체를 준비한다.
 
@@ -252,11 +253,136 @@ java basic programming
 명령> 
 ```
 
+### ver 5.2.1 - `MemberDao`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
+
+#### 1단계) `MemberDao` 클래스에서 SQL을 분리한다.
+
+- com/eomcs/lms/mapper/MemberMapper.xml
+    - `MemberDao`에서 사용하는 SQL을 이 파일로 옮긴다.
+- mybatis-config.xml
+    - MyBatis 설정 파일에 SQL 매퍼 파일 `MemberMapper.xml`을 등록한다.
+
+#### 2단계) MemberDao에 MyBatis를 적용한다.
+
+- MemberDao.java
+    - JDBC API 대신 MyBatis를 적용한다.
+- DataLoaderListener.java
+    - `MemberDao`에 `DataSource` 대신에 `SqlSessionFactory`를 주입한다.
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+이전과 같다.
+```
+
+### ver 5.2.2 - `BoardDao`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
+
+#### 1단계) `BoardDao` 클래스에서 SQL을 분리한다.
+
+- com/eomcs/lms/mapper/BoardMapper.xml
+    - `BoardDao`에서 사용하는 SQL을 이 파일로 옮긴다.
+- mybatis-config.xml
+    - MyBatis 설정 파일에 SQL 매퍼 파일 `BoardMapper.xml`을 등록한다.
+
+#### 2단계) BoardDao MyBatis를 적용한다.
+
+- BoardDao.java
+    - JDBC API 대신 MyBatis를 적용한다.
+- DataLoaderListener.java
+    - `BoardDao`에 `DataSource` 대신에 `SqlSessionFactory`를 주입한다.
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+이전과 같다.
+```
+
+### ver 5.2.3 - `PhotoBoardDao`와 `PhotoFileDao`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
+
+#### 1단계) `PhotoBoardDao` 클래스와 `PhotoFileDao`에서 SQL을 분리한다.
+
+- com/eomcs/lms/mapper/PhotoBoardMapper.xml
+    - `PhotoBoardDao`에서 사용하는 SQL을 이 파일로 옮긴다.
+- com/eomcs/lms/mapper/PhotoFileMapper.xml
+    - `PhotoFileDao`에서 사용하는 SQL을 이 파일로 옮긴다.    
+- mybatis-config.xml
+    - MyBatis 설정 파일에 SQL 매퍼 파일 `PhotoBoardMapper.xml`과 `PhotoFileMapper.xml`을 등록한다.
+
+#### 2단계) PhotoBoardDao와 PhotoFileDao에 MyBatis를 적용한다.
+
+- PhotoBoardDao.java
+    - JDBC API 대신 MyBatis를 적용한다.
+- PhotoFileDao.java
+    - JDBC API 대신 MyBatis를 적용한다.
+- DataLoaderListener.java
+    - `PhotoBoardDao`와 `PhotoFileDao`에 `DataSource` 대신에 `SqlSessionFactory`를 주입한다.
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+명령> /photoboard/add
+제목?
+test...100
+수업?
+1
+최소 한 개의 사진 파일을 등록해야 합니다.
+파일명 입력 없이 그냥 엔터를 치면 파일 추가를 마칩니다.
+사진 파일?
+a.png
+사진 파일?
+c.png
+사진 파일?
+012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890012345678900123456789001234567890
+사진 파일?
+
+org.apache.ibatis.exceptions.PersistenceException: 
+### Error updating database.  Cause: java.sql.SQLDataException: (conn=18) Data too long for column 'PATH' at row 1
+### The error may involve PhotoFileMapper.add-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO PHO_FILE(PATH,PNO)      VALUES(?,?)
+### Cause: java.sql.SQLDataException: (conn=18) Data too long for column 'PATH' at row 1 : 
+### Error updating database.  Cause: java.sql.SQLDataException: (conn=18) Data too long for column 'PATH' at row 1
+### The error may involve PhotoFileMapper.add-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO PHO_FILE(PATH,PNO)      VALUES(?,?)
+### Cause: java.sql.SQLDataException: (conn=18) Data too long for column 'PATH' at row 1
+
+명령> /photoboard/list
+  1, 수업 오리엔테이션           , 2018-11-14, 0, 1
+  2, 1차 과제 발표            , 2018-11-14, 0, 1
+  3, null                , 2018-11-14, 0, 2
+  4, 과제 발표회              , 2018-11-14, 0, 3
+  6, 발표2                 , 2018-11-14, 0, 1
+  8, test1               , 2018-11-15, 0, 2
+ 21, okok                , 2018-11-19, 0, 1
+ 22, test...100          , 2018-11-19, 0, 1
+
+명령> /photoboard/detail
+번호?
+22
+제목: test...100
+작성일: 2018-11-19
+조회수: 0
+수업: 1
+사진 파일:
+> a.png
+> c.png
+
+```
+
+파일 등록 도중에 파일명이 너무 길어 입력 실패했는데도 이전 입력은 그대로 유지된다. MyBatis에 대해 트랜잭션이 적용되지 않았기 때문이다. 이전에 작성한 트랜잭션 관리 코드는 MyBatis와 관계가 없다.
+
+
+
+
 ## 실습 소스
 
-- build.gradle 변경
-- com/eomcs/lms/conf/mybatis-config.xml 추가
-- com/eomcs/lms/conf/jdbc.properties 추가
-- com/eomcs/lms/mapper/LessonMapper.xml 추가
+- com/eomcs/lms/mapper/PhotoBoardMapper.xml 추가
+- com/eomcs/lms/mapper/PhotoFileMapper.xml 추가
+- com/eomcs/lms/conf/mybatis-config.xml 변경
+- com/eomcs/lms/dao/PhotoBoardDao.java 변경
+- com/eomcs/lms/dao/PhotoFileDao.java 변경
 - com/eomcs/lms/DataLoaderListener.java 변경
-- com/eomcs/lms/dao/LessonDao.java 변경

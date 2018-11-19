@@ -33,7 +33,8 @@ DB 프로그래밍 더 쉽고 간단히 하는 방법
 
 - com/eomcs/lms/mapper/LessonMapper.xml (LessonMapper.xml.01)
     - `LessonDao`의 list()에서 사용할 SQL을 이 파일에 둔다.
-- `mybatis-config.xml` 설정 파일에 SQL 매퍼 파일 `LessonMapper.xml`을 등록한다.
+- mybatis-config.xml
+    - 설정 파일에 SQL 매퍼 파일 `LessonMapper.xml`을 등록한다.
   
 #### 4단계) MyBatis 관련 자바 객체를 준비한다.
 
@@ -252,11 +253,33 @@ java basic programming
 명령> 
 ```
 
+### ver 5.2.1 - `MemberDao`에 `MyBatis` 퍼시스턴스 프레임워크를 적용하라.
+
+#### 1단계) `MemberDao` 클래스에서 SQL을 분리한다.
+
+- com/eomcs/lms/mapper/MemberMapper.xml
+    - `MemberDao`에서 사용하는 SQL을 이 파일로 옮긴다.
+- mybatis-config.xml
+    - MyBatis 설정 파일에 SQL 매퍼 파일 `MemberMapper.xml`을 등록한다.
+
+#### 2단계) MemberDao에 MyBatis를 적용한다.
+
+- MemberDao.java
+    - JDBC API 대신 MyBatis를 적용한다.
+- DataLoaderListener.java
+    - `MemberDao`에 `DataSource` 대신에 `SqlSessionFactory`를 주입한다.
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+이전과 같다.
+```
+
+
 ## 실습 소스
 
-- build.gradle 변경
-- com/eomcs/lms/conf/mybatis-config.xml 추가
-- com/eomcs/lms/conf/jdbc.properties 추가
-- com/eomcs/lms/mapper/LessonMapper.xml 추가
+- com/eomcs/lms/mapper/MemberMapper.xml 추가
+- com/eomcs/lms/conf/mybatis-config.xml 변경
+- com/eomcs/lms/dao/MemberDao.java 변경
 - com/eomcs/lms/DataLoaderListener.java 변경
-- com/eomcs/lms/dao/LessonDao.java 변경
