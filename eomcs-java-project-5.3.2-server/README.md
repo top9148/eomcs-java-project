@@ -39,7 +39,29 @@ SQL 매퍼 파일에서 자바 클래스를 지정할 때 패키지 이름까지
 이전과 같다.
 ```
 
+### ver 5.3.2 - SQL의 일부코드를 따로 정의해두고 재사용한다.
 
+여러 SQL문에서 반복적으로 사용되는 SQL 코드가 있다면 `<sql/>` 태그로 정의하여 재사용할 수 있다.
+
+- BoardMapper.xml
+    - list/detail SQL 문에 공통으로 들어갈 SQL 코드를 분리한다.
+- MemberMapper.xml
+    - list/search SQL 문에 공통으로 들어갈 SQL 코드를 분리한다.
+    - detail/detailByEmailPassword 문에 공통으로 들어갈 SQL 코드를 분리한다.
+- LessonMapper.xml
+    - list/detail SQL 문에 공통으로 들어갈 SQL 코드를 분리한다. 
+- PhotoBoardMapper.xml
+    - list/detail SQL 문에 공통으로 들어갈 SQL 코드를 분리한다. 
+- PhotoFileMapper.xml
+    - list/detail SQL 문에 공통으로 들어갈 SQL 코드를 분리한다. 
+
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+이전과 같다.
+```
 
 ## 실습 소스
 

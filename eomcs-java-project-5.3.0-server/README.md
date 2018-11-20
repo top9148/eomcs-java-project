@@ -1,6 +1,6 @@
 # eomcs-java-project-5.3-server
 
-MyBatis를 더 잘 활용하기
+MyBatis의 다양한 기능 활용법
 
 - MyBatis의 다양한 기능을 사용하는 방법
 
