@@ -2,27 +2,24 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
-import com.eomcs.sql.TransactionManager;
 
 public class PhotoBoardAddCommand implements Command {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  TransactionManager txManager;
-  
-  public PhotoBoardAddCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao, TransactionManager txManager) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
-    this.txManager = txManager;
+  SqlSessionFactory sqlSessionFactory;
+
+  public PhotoBoardAddCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       PhotoBoard board = new PhotoBoard();
 
       out.print("제목?\n!{}!\n"); out.flush();
@@ -54,7 +51,8 @@ public class PhotoBoardAddCommand implements Command {
         }
       }
       
-      txManager.beginTransaction();
+      PhotoBoardDao photoBoardDao = sqlSession.getMapper(PhotoBoardDao.class); 
+      PhotoFileDao photoFileDao = sqlSession.getMapper(PhotoFileDao.class); 
       
       photoBoardDao.add(board);
       for (PhotoFile photo : photos) {
@@ -62,12 +60,11 @@ public class PhotoBoardAddCommand implements Command {
       }
       photoFileDao.add(photos);
       
-      
-      txManager.commit();
       out.println("사진을 저장했습니다.");
       
+      sqlSession.commit();
+      
     } catch (Exception e) {
-      txManager.rollback();
       out.printf("%s : %s\n", e.toString(), e.getMessage());
       
     }

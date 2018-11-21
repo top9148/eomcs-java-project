@@ -2,6 +2,8 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
@@ -9,20 +11,21 @@ import com.eomcs.lms.domain.PhotoFile;
 
 public class PhotoBoardDetailCommand implements Command {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  
-  public PhotoBoardDetailCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
+  SqlSessionFactory sqlSessionFactory;
+
+  public PhotoBoardDetailCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("번호?\n!{}!\n"); out.flush();
       int no = Integer.parseInt(in.readLine());
 
+      PhotoBoardDao photoBoardDao = sqlSession.getMapper(PhotoBoardDao.class); 
+      PhotoFileDao photoFileDao = sqlSession.getMapper(PhotoFileDao.class); 
+      
       PhotoBoard board = photoBoardDao.detail(no);
       if (board == null) { 
         out.println("해당 사진을 찾을 수 없습니다.");

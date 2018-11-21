@@ -3,30 +3,30 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
-import com.eomcs.sql.TransactionManager;
 
 public class PhotoBoardUpdateCommand implements Command {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  TransactionManager txManager;
-  
-  public PhotoBoardUpdateCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao, TransactionManager txManager) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
-    this.txManager = txManager;
+  SqlSessionFactory sqlSessionFactory;
+
+  public PhotoBoardUpdateCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("번호?\n!{}!\n"); out.flush();
       int no = Integer.parseInt(in.readLine());
 
+      PhotoBoardDao photoBoardDao = sqlSession.getMapper(PhotoBoardDao.class); 
+      PhotoFileDao photoFileDao = sqlSession.getMapper(PhotoFileDao.class); 
+      
       PhotoBoard board = photoBoardDao.detail(no);
       if (board == null) { 
         out.println("해당 사진을 찾을 수 없습니다.");
@@ -74,8 +74,6 @@ public class PhotoBoardUpdateCommand implements Command {
         }
       }
 
-      txManager.beginTransaction();
-      
       photoBoardDao.update(board);
       
       if (updatePhotos.size() > 0) {
@@ -86,12 +84,11 @@ public class PhotoBoardUpdateCommand implements Command {
         photoFileDao.add(updatePhotos);
       }
       
-      txManager.commit();
-      
       out.println("사진을 변경했습니다.");
+      
+      sqlSession.commit();
 
     } catch (Exception e) {
-      txManager.rollback();
       out.printf("%s : %s\n", e.toString(), e.getMessage());
       
     }

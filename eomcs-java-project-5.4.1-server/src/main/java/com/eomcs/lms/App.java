@@ -12,10 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.context.ApplicationContextListener;
-import com.eomcs.lms.dao.LessonDao;
-import com.eomcs.lms.dao.MemberDao;
-import com.eomcs.lms.dao.PhotoBoardDao;
-import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.handler.BoardAddCommand;
 import com.eomcs.lms.handler.BoardDeleteCommand;
 import com.eomcs.lms.handler.BoardDetailCommand;
@@ -41,7 +37,6 @@ import com.eomcs.lms.handler.PhotoBoardDetail2Command;
 import com.eomcs.lms.handler.PhotoBoardDetailCommand;
 import com.eomcs.lms.handler.PhotoBoardListCommand;
 import com.eomcs.lms.handler.PhotoBoardUpdateCommand;
-import com.eomcs.sql.TransactionManager;
 
 public class App {
 
@@ -73,24 +68,19 @@ public class App {
 
     SqlSessionFactory sqlSessionFactory = (SqlSessionFactory) context.get("sqlSessionFactory");
     
-    // 핸들러가 사용할 DAO 프록시 객체는 context에서 꺼내 준다.
-    LessonDao lessonDao = (LessonDao) context.get("lessonDao");
+    commandMap.put("/lesson/add", new LessonAddCommand(sqlSessionFactory));
+    commandMap.put("/lesson/list", new LessonListCommand(sqlSessionFactory));
+    commandMap.put("/lesson/detail", new LessonDetailCommand(sqlSessionFactory));
+    commandMap.put("/lesson/update", new LessonUpdateCommand(sqlSessionFactory));
+    commandMap.put("/lesson/delete", new LessonDeleteCommand(sqlSessionFactory));
+    commandMap.put("/lesson/search", new LessonSearchCommand(sqlSessionFactory));
 
-    commandMap.put("/lesson/add", new LessonAddCommand(lessonDao));
-    commandMap.put("/lesson/list", new LessonListCommand(lessonDao));
-    commandMap.put("/lesson/detail", new LessonDetailCommand(lessonDao));
-    commandMap.put("/lesson/update", new LessonUpdateCommand(lessonDao));
-    commandMap.put("/lesson/delete", new LessonDeleteCommand(lessonDao));
-    commandMap.put("/lesson/search", new LessonSearchCommand(lessonDao));
-
-    MemberDao memberDao = (MemberDao) context.get("memberDao");
-
-    commandMap.put("/member/add", new MemberAddCommand(memberDao));
-    commandMap.put("/member/list", new MemberListCommand(memberDao));
-    commandMap.put("/member/detail", new MemberDetailCommand(memberDao));
-    commandMap.put("/member/update", new MemberUpdateCommand(memberDao));
-    commandMap.put("/member/delete", new MemberDeleteCommand(memberDao));
-    commandMap.put("/member/search", new MemberSearchCommand(memberDao));
+    commandMap.put("/member/add", new MemberAddCommand(sqlSessionFactory));
+    commandMap.put("/member/list", new MemberListCommand(sqlSessionFactory));
+    commandMap.put("/member/detail", new MemberDetailCommand(sqlSessionFactory));
+    commandMap.put("/member/update", new MemberUpdateCommand(sqlSessionFactory));
+    commandMap.put("/member/delete", new MemberDeleteCommand(sqlSessionFactory));
+    commandMap.put("/member/search", new MemberSearchCommand(sqlSessionFactory));
 
     commandMap.put("/board/add", new BoardAddCommand(sqlSessionFactory));
     commandMap.put("/board/list", new BoardListCommand(sqlSessionFactory));
@@ -98,18 +88,14 @@ public class App {
     commandMap.put("/board/update", new BoardUpdateCommand(sqlSessionFactory));
     commandMap.put("/board/delete", new BoardDeleteCommand(sqlSessionFactory));
 
-    PhotoBoardDao photoBoardDao = (PhotoBoardDao) context.get("photoBoardDao");
-    PhotoFileDao photoFileDao = (PhotoFileDao) context.get("photoFileDao");
-    TransactionManager txManager = (TransactionManager) context.get("transactionManager");
+    commandMap.put("/photoboard/list", new PhotoBoardListCommand(sqlSessionFactory));
+    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(sqlSessionFactory));
+    commandMap.put("/photoboard/detail", new PhotoBoardDetailCommand(sqlSessionFactory));
+    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(sqlSessionFactory));
+    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(sqlSessionFactory));
+    commandMap.put("/photoboard/detail2", new PhotoBoardDetail2Command(sqlSessionFactory));
     
-    commandMap.put("/photoboard/list", new PhotoBoardListCommand(photoBoardDao));
-    commandMap.put("/photoboard/add", new PhotoBoardAddCommand(photoBoardDao, photoFileDao, txManager));
-    commandMap.put("/photoboard/detail", new PhotoBoardDetailCommand(photoBoardDao, photoFileDao));
-    commandMap.put("/photoboard/update", new PhotoBoardUpdateCommand(photoBoardDao, photoFileDao, txManager));
-    commandMap.put("/photoboard/delete", new PhotoBoardDeleteCommand(photoBoardDao, photoFileDao, txManager));
-    commandMap.put("/photoboard/detail2", new PhotoBoardDetail2Command(photoBoardDao));
-    
-    commandMap.put("/auth/login", new LoginCommand(memberDao));
+    commandMap.put("/auth/login", new LoginCommand(sqlSessionFactory));
     
     // 클라이언트와 연결할 준비하기
     serverSocket = new ServerSocket(port);

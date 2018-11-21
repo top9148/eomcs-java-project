@@ -1,25 +1,27 @@
 package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonDetailCommand implements Command {
 
-  LessonDao lessonDao;
+  SqlSessionFactory sqlSessionFactory;
 
-  public LessonDetailCommand(LessonDao lessonDao) {
-    this.lessonDao = lessonDao;
+  public LessonDetailCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("번호?\n!{}!\n");
       out.flush();
       int no = Integer.parseInt(in.readLine());
       
+      LessonDao lessonDao = sqlSession.getMapper(LessonDao.class); 
       Lesson lesson = lessonDao.detail(no);
       if (lesson == null) { 
         out.println("해당 수업을 찾을 수 없습니다.");

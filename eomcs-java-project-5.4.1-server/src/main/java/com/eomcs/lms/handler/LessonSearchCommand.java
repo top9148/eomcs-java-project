@@ -6,20 +6,22 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonSearchCommand implements Command {
   
-  LessonDao lessonDao;
+  SqlSessionFactory sqlSessionFactory;
 
-  public LessonSearchCommand(LessonDao lessonDao) {
-    this.lessonDao = lessonDao;
+  public LessonSearchCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
-  
+
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       Map<String,Object> params = new HashMap<>();
       
       out.print("수업명?\n!{}!\n"); out.flush();
@@ -46,6 +48,7 @@ public class LessonSearchCommand implements Command {
         params.put("endDate", Date.valueOf(value));
       }
       
+      LessonDao lessonDao = sqlSession.getMapper(LessonDao.class); 
       List<Lesson> lessons = lessonDao.list(params);
       if (lessons == null) { 
         out.println("서버에서 데이터를 가져오는데 오류 발생!");

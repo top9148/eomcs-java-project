@@ -1,29 +1,27 @@
 package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
-import com.eomcs.sql.TransactionManager;
 
 public class PhotoBoardDeleteCommand implements Command {
 
-  PhotoBoardDao photoBoardDao;
-  PhotoFileDao photoFileDao;
-  TransactionManager txManager;
-  
-  public PhotoBoardDeleteCommand(PhotoBoardDao photoBoardDao, PhotoFileDao photoFileDao, TransactionManager txManager) {
-    this.photoBoardDao = photoBoardDao;
-    this.photoFileDao = photoFileDao;
-    this.txManager = txManager;
+  SqlSessionFactory sqlSessionFactory;
+
+  public PhotoBoardDeleteCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("번호?\n!{}!\n"); out.flush();
       int no = Integer.parseInt(in.readLine());
       
-      txManager.beginTransaction();
+      PhotoBoardDao photoBoardDao = sqlSession.getMapper(PhotoBoardDao.class); 
+      PhotoFileDao photoFileDao = sqlSession.getMapper(PhotoFileDao.class); 
       
       // 게시물에 첨부된 사진 파일을 먼저 삭제한다.
       photoFileDao.deleteByBoard(no);
@@ -33,10 +31,9 @@ public class PhotoBoardDeleteCommand implements Command {
       } else { 
         out.println("해당 사진을 찾을 수 없습니다.");
       }
-      txManager.commit();
+      sqlSession.commit();
       
     } catch (Exception e) {
-      txManager.rollback();
       out.printf("%s : %s\n", e.toString(), e.getMessage());
       
     }

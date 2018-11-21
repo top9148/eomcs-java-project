@@ -3,20 +3,23 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.List;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonListCommand implements Command {
   
-  LessonDao lessonDao;
+  SqlSessionFactory sqlSessionFactory;
 
-  public LessonListCommand(LessonDao lessonDao) {
-    this.lessonDao = lessonDao;
+  public LessonListCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
-  
+
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+      LessonDao lessonDao = sqlSession.getMapper(LessonDao.class); 
       List<Lesson> lessons = lessonDao.list(null);
       if (lessons == null) { 
         out.println("서버에서 데이터를 가져오는데 오류 발생!");

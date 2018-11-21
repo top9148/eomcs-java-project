@@ -2,24 +2,26 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.sql.Date;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
 
 public class LessonUpdateCommand implements Command {
 
-  LessonDao lessonDao;
+  SqlSessionFactory sqlSessionFactory;
 
-  public LessonUpdateCommand(LessonDao lessonDao) {
-    this.lessonDao = lessonDao;
+  public LessonUpdateCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("번호?\n!{}!\n"); out.flush();
       int no = Integer.parseInt(in.readLine());
 
+      LessonDao lessonDao = sqlSession.getMapper(LessonDao.class); 
       Lesson lesson = lessonDao.detail(no);
       if (lesson == null) { 
         out.println("해당 게시글을 찾을 수 없습니다.");
@@ -57,6 +59,8 @@ public class LessonUpdateCommand implements Command {
       
       lessonDao.update(lesson);
       out.println("수업을 변경했습니다.");
+      
+      sqlSession.commit();
       
     } catch (Exception e) {
       out.printf("%s : %s\n", e.toString(), e.getMessage());

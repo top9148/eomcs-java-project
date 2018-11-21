@@ -3,20 +3,22 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
 
 public class LoginCommand implements Command {
 
-  MemberDao memberDao;
+  SqlSessionFactory sqlSessionFactory;
 
-  public LoginCommand(MemberDao memberDao) {
-    this.memberDao = memberDao;
+  public LoginCommand(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
   }
 
   @Override
   public void execute(BufferedReader in, PrintWriter out) {
-    try {
+    try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
       out.print("이메일?\n!{}!\n"); out.flush();
       String email = in.readLine();
 
@@ -27,6 +29,7 @@ public class LoginCommand implements Command {
       params.put("email", email);
       params.put("password", password);
       
+      MemberDao memberDao = sqlSession.getMapper(MemberDao.class); 
       Member member = memberDao.detailByEmailPassword(params);
 
       if (member != null)
