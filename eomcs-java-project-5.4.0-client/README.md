@@ -1,12 +1,13 @@
-# eomcs-java-project-5.3-client
+# eomcs-java-project-5.4-client
 
-MyBatis의 다양한 기능 활용법
+`Proxy` 생성기를 이용하여 DAO 구현체를 자동으로 만들기
 
-- MyBatis의 다양한 기능을 사용하는 방법
+- 자바에서 제공하는 Proxy 생성기를 활용하는 방법
+- DAO 구현체를 만드는데 Proxy 생성기 사용하기
 
 ## 프로젝트 - 수업관리 시스템  
 
-`eomcs-java-project-5.2.0-client`와 동일하다.
+`eomcs-java-project-5.3.0-client`와 동일하다.
 
 ##### 실행 결과
 
