@@ -1,9 +1,9 @@
 # eomcs-java-project-5.4-client
 
-`Proxy` 생성기를 이용하여 DAO 구현체를 자동으로 만들기
+DAO 구현체를 자동으로 만들기
 
-- 자바에서 제공하는 Proxy 생성기를 활용하는 방법
-- DAO 구현체를 만드는데 Proxy 생성기 사용하기
+- 자바에서 제공하는 Proxy 생성기를 활용하여 DAO 구현체를 만드는 방법
+- `MyBatis`의 `SqlSession` 객체를 이용하여 DAO 구현체를 만드는 방법
 
 ## 프로젝트 - 수업관리 시스템  
 

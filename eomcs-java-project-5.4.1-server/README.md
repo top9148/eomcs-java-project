@@ -91,6 +91,48 @@ DAO 구현체를 자동으로 만들기
 이전과 같다.
 ```
 
+### ver 5.4.1 - MyBatis의 SqlSession을 이용하여 DAO 구현체를 자동으로 생성한다.
+
+MyBatis에서도 DAO 인터페이스를 구현한 객체를 만들어 줄 수 있다.
+
+#### 1단계) XxxCommand 객체를 만들 때 사용할 SqlSessionFactory를 맵에 보관한다.
+
+- DataLoaderListener.java
+    - `contextInitialized()`에서 `SqlSessionFactory` 객체를 맵에 보관한다.
+
+#### 2단계) BoardXxxxCommand 클래스에 SqlSessionFactory를 주입한다.
+
+- BoardListCommand.java
+    - 생성자는 DAO 객체 대신에 SqlSessionFactory를 받는다.
+    - 명령어를 처리할 때마다 SqlSession 객체에서 Dao 객체를 만들어 사용한다.
+- BoardAddCommand.java
+    - 생성자는 DAO 객체 대신에 SqlSessionFactory를 받는다.
+    - 명령어를 처리할 때마다 SqlSession 객체에서 Dao 객체를 만들어 사용한다.
+    - commit()/rollback()을 직접 호출한다.
+- BoardDetailCommand.java
+    - 생성자는 DAO 객체 대신에 SqlSessionFactory를 받는다.
+    - 명령어를 처리할 때마다 SqlSession 객체에서 Dao 객체를 만들어 사용한다.
+- BoardUpdateCommand.java
+    - 생성자는 DAO 객체 대신에 SqlSessionFactory를 받는다.
+    - 명령어를 처리할 때마다 SqlSession 객체에서 Dao 객체를 만들어 사용한다.
+    - commit()/rollback()을 직접 호출한다.
+- BoardDeleteCommand.java
+    - 생성자는 DAO 객체 대신에 SqlSessionFactory를 받는다.
+    - 명령어를 처리할 때마다 SqlSession 객체에서 Dao 객체를 만들어 사용한다.
+    - commit()/rollback()을 직접 호출한다.
+- BoardMapper.xml
+    - 네이스페이스 이름을 `BoardDao` 인터페이스의 전체 이름(패키지명 + 인터페이스명)으로 변경한다.
+    - SqlSession 객체를 통해 DAO 구현체를 만들 때는 매퍼의 네임스페이스 이름을 반드시 인터페이스의 전체 이름와 같아야 한다.
+- App.java
+    - `BoardXxxxCommand` 객체를 생성할 때 생성자에 Dao 객체 대신에 SqlSessionFactory 객체를 전달한다.
+
+##### 실습 결과
+
+`eomcs-java-project-client`프로젝트의 `ClientApp`을 실행한다.
+```
+이전과 같다.
+```
+
 ## 실습 소스
 
 - com/eomcs/sql/DaoInvocationHandler.java 추가
