@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Map;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/search")
 public class LessonSearchCommand implements Command {
   
-  public final String name = "/lesson/search";
   LessonDao lessonDao;
 
   public LessonSearchCommand(LessonDao lessonDao) {

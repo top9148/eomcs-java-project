@@ -5,10 +5,11 @@ import java.util.List;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/detail2")
 public class PhotoBoardDetail2Command implements Command {
 
-  public final String name = "/photoboard/detail2";
   PhotoBoardDao photoBoardDao;
   
   public PhotoBoardDetail2Command(PhotoBoardDao photoBoardDao) {

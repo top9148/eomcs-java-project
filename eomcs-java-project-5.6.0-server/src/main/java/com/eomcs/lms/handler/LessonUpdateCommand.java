@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/update")
 public class LessonUpdateCommand implements Command {
 
-  public final String name = "/lesson/update";
   LessonDao lessonDao;
 
   public LessonUpdateCommand(LessonDao lessonDao) {

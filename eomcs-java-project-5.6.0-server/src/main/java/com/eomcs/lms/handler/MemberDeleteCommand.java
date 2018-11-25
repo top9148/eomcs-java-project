@@ -2,10 +2,11 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.MemberDao;
+import com.eomcs.stereotype.Component;
 
+@Component("/member/delete")
 public class MemberDeleteCommand implements Command {
 
-  public final String name = "/member/delete";
   MemberDao memberDao;
 
   public MemberDeleteCommand(MemberDao memberDao) {

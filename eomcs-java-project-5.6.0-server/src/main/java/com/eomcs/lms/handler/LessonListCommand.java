@@ -5,10 +5,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/list")
 public class LessonListCommand implements Command {
   
-  public final String name = "/lesson/list";
   LessonDao lessonDao;
 
   public LessonListCommand(LessonDao lessonDao) {

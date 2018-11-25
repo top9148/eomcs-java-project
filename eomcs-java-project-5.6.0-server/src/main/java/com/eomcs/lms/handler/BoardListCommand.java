@@ -4,10 +4,10 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.lms.dao.BoardDao;
 import com.eomcs.lms.domain.Board;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/board/list")
 public class BoardListCommand implements Command {
-  
-  public final String name = "/board/list";
   
   BoardDao boardDao;
 

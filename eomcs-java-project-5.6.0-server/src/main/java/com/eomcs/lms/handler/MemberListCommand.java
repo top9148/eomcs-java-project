@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.stereotype.Component;
 
+@Component("/member/list")
 public class MemberListCommand implements Command {
   
-  public final String name = "/member/list";
   MemberDao memberDao;
 
   public MemberListCommand(MemberDao memberDao) {

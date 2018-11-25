@@ -5,10 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/auth/login")
 public class LoginCommand implements Command {
 
-  public final String name = "/auth/login";
   MemberDao memberDao;
 
   public LoginCommand(MemberDao memberDao) {

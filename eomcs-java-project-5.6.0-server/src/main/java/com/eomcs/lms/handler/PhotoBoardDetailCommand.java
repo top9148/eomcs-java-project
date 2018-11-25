@@ -6,10 +6,11 @@ import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/detail")
 public class PhotoBoardDetailCommand implements Command {
 
-  public final String name = "/photoboard/detail";
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   

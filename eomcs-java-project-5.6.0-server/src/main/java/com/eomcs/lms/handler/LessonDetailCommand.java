@@ -3,10 +3,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/detail")
 public class LessonDetailCommand implements Command {
 
-  public final String name = "/lesson/detail";
   LessonDao lessonDao;
 
   public LessonDetailCommand(LessonDao lessonDao) {

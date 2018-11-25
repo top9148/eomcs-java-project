@@ -3,11 +3,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.BoardDao;
 import com.eomcs.lms.domain.Board;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/board/add")
 public class BoardAddCommand implements Command {
 
-  public final String name = "/board/add";
-  
   BoardDao boardDao;
 
   public BoardAddCommand(BoardDao boardDao) {

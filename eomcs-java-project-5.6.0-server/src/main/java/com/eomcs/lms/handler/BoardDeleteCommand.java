@@ -2,11 +2,11 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.BoardDao;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/board/delete")
 public class BoardDeleteCommand implements Command {
 
-  public final String name = "/board/delete";
-  
   BoardDao boardDao;
 
   public BoardDeleteCommand(BoardDao boardDao) {

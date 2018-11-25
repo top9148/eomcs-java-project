@@ -2,10 +2,11 @@ package com.eomcs.lms.handler;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.LessonDao;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/delete")
 public class LessonDeleteCommand implements Command {
 
-  public final String name = "/lesson/delete";
   LessonDao lessonDao;
 
   public LessonDeleteCommand(LessonDao lessonDao) {

@@ -3,10 +3,11 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.domain.Member;
+import com.eomcs.stereotype.Component;
 
+@Component("/member/update")
 public class MemberUpdateCommand implements Command {
 
-  public final String name = "/member/update";
   MemberDao memberDao;
 
   public MemberUpdateCommand(MemberDao memberDao) {

@@ -7,10 +7,11 @@ import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
 import com.eomcs.sql.TransactionManager;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/add")
 public class PhotoBoardAddCommand implements Command {
 
-  public final String name = "/photoboard/add";
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   TransactionManager txManager;

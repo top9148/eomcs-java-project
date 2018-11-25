@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.sql.TransactionManager;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/delete")
 public class PhotoBoardDeleteCommand implements Command {
 
-  public final String name = "/photoboard/delete";
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   TransactionManager txManager;

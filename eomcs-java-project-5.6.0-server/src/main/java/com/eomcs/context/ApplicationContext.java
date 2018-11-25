@@ -3,7 +3,6 @@ package com.eomcs.context;
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,10 +15,10 @@ import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.dao.MemberDao;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.dao.PhotoFileDao;
-import com.eomcs.lms.handler.Command;
 import com.eomcs.sql.MybatisDaoFactory;
 import com.eomcs.sql.SqlSessionFactoryProxy;
 import com.eomcs.sql.TransactionManager;
+import com.eomcs.stereotype.Component;
 
 public class ApplicationContext {
 
@@ -74,13 +73,10 @@ public class ApplicationContext {
       // 클래스 이름으로 .class 파일을 로딩한다.
       Class<?> clazz = Class.forName(className);
 
-      // 해당 클래스가 Command 인터페이스를 구현한 경우 자동 생성할 클래스 목록에 등록한다.
-      Class<?>[] interfaces = clazz.getInterfaces();
-      for (Class<?> i : interfaces) {
-        if (i == Command.class) {
-          classes.add(clazz);
-          break;
-        }
+      // @Component 애노테이션은 붙은 클래스인 경우에만 IoC 컨테이너 관리 대상 객체로 등록한다.
+      Component compAnno = clazz.getAnnotation(Component.class);
+      if (compAnno != null) {
+        classes.add(clazz);
       }
     }
 
@@ -126,11 +122,11 @@ public class ApplicationContext {
             continue; // 생성자를 호출하지 못해 인스턴스를 만들지 못했으면 포기한다.
         }
         
-        // 객체를 등록할 때 사용할 이름 필드를 객체에서 꺼낸다.
-        Field objNameField = obj.getClass().getField("name");
+        // 객체를 등록할 때 사용할 이름을 애노테이션에서 꺼낸다.
+        Component compAnno = clazz.getAnnotation(Component.class);
 
         // 이름 필드에 저장된 이름으로 객체를 풀에 등록한다.
-        addBean((String)objNameField.get(obj), obj);
+        addBean(compAnno.value(), obj);
         
       } catch (Exception e) {
         // 그 외 다른 오류의 경우 객체 생성을 포기한다.
@@ -171,7 +167,7 @@ public class ApplicationContext {
   }
 
   public void addBean(String name, Object obj) {
-    if (name == null) {
+    if (name == null || name.equals("")) {
       objPool.put(obj.getClass().getName(), obj);
     } else {
       objPool.put(name, obj);

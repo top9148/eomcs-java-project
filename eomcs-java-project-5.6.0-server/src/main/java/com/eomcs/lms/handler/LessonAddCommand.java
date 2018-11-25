@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 import java.sql.Date;
 import com.eomcs.lms.dao.LessonDao;
 import com.eomcs.lms.domain.Lesson;
+import com.eomcs.stereotype.Component;
 
+@Component(value="/lesson/add")
 public class LessonAddCommand implements Command {
 
-  public final String name = "/lesson/add";
   LessonDao lessonDao;
 
   public LessonAddCommand(LessonDao lessonDao) {

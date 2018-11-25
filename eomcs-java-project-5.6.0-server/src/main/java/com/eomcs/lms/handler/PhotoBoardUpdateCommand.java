@@ -8,10 +8,11 @@ import com.eomcs.lms.dao.PhotoFileDao;
 import com.eomcs.lms.domain.PhotoBoard;
 import com.eomcs.lms.domain.PhotoFile;
 import com.eomcs.sql.TransactionManager;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/update")
 public class PhotoBoardUpdateCommand implements Command {
 
-  public final String name = "/photoboard/update";
   PhotoBoardDao photoBoardDao;
   PhotoFileDao photoFileDao;
   TransactionManager txManager;

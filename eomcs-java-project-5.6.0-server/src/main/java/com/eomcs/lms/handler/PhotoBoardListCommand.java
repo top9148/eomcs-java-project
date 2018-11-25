@@ -4,10 +4,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import com.eomcs.lms.dao.PhotoBoardDao;
 import com.eomcs.lms.domain.PhotoBoard;
+import com.eomcs.stereotype.Component;
 
+@Component("/photoboard/list")
 public class PhotoBoardListCommand implements Command {
   
-  public final String name = "/photoboard/list";
   PhotoBoardDao photoBoardDao;
 
   public PhotoBoardListCommand(PhotoBoardDao photoBoardDao) {
