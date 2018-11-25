@@ -23,7 +23,7 @@ IoC 컨테이너 개선 : 애노테이션을 이용한 객체 관리
 
 - XxxCommand.java
     - `Component` 애노테이션을 붙인다.
-    - `name` 필드를 제거하고 대신 `Component` 애노테이션의 `name` 속성에 객체 이름을 설정한다.
+    - `name` 필드를 제거하고 대신 `Component` 애노테이션의 `value` 속성에 객체 이름을 설정한다.
 
 #### 3단계) IoC 컨테이너는 @Component 애노테이션이 붙은 클래스에 대해 인스턴스를 생성한다.
 
