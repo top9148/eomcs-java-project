@@ -62,6 +62,9 @@ MyBatis를 Spring IoC 컨테이너와 연동하면 좀 더 편리하게 MyBatis�
     - `DaoInvocationHandler`, `MybatisDaoFactory`, `SqlSessionFactoryProxy`, `SqlSessionProxy`, `TransactionManager` 클래스를 삭제한다.
 - SQL 매퍼 파일의 namespace 속성 값을 DAO 인터페이스의 전체 이름과 같게 맞춘다.
     - 예) `<mapper namespace="com.eomcs.lms.dao.BoardDao">`
+- mybatis-config.xml
+    - MyBatis 객체는 Spring IoC 컨테이너에서 관리하기 때문에 더이상 MyBatis 설정 파일이 필요 없다.
+    - 삭제한다.
 
 
 #### 6단계) PhotoBoardHandler 클래스는 Spring에서 제공하는 트랜잭션 관리자를 사용한다.
@@ -93,4 +96,5 @@ MyBatis를 Spring IoC 컨테이너와 연동하면 좀 더 편리하게 MyBatis�
 - com/eomcs/lms/mapper/LessonMapper.xml 변경
 - com/eomcs/lms/mapper/PhotoBoardMapper.xml 변경
 - com/eomcs/lms/mapper/PhotoFileMapper.xml 변경
+- com/eomcs/lms/conf/mybatis-config.xml 삭제
 - com/eomcs/lms/handler/PhotoBoardHandler.java 변경

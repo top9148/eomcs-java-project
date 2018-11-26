@@ -308,6 +308,8 @@
 
 - 오픈 소스 Spring IoC 컨테이너를 설정하고 사용하는 방법
 
-### 5.10 - Spring IoC 컨테이너와 MyBatis 연동하기
+### 6.0 - Spring IoC 컨테이너와 MyBatis 연동하기
 
 - MyBatis를 Spring IoC 컨테이너와 연동하는 방법
+
+### 6.1 - 
