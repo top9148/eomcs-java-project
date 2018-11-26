@@ -9,11 +9,11 @@ import com.eomcs.stereotype.CommandMapping;
 import com.eomcs.stereotype.Component;
 
 @Component
-public class LoginCommand {
+public class AuthHandler {
 
   MemberDao memberDao;
 
-  public LoginCommand(MemberDao memberDao) {
+  public AuthHandler(MemberDao memberDao) {
     this.memberDao = memberDao;
   }
 
