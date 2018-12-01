@@ -1,22 +1,28 @@
 package com.eomcs.lms;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.eomcs.context.ApplicationContextListener;
 import com.eomcs.context.CommandMappingHandlerMapping;
 import com.eomcs.stereotype.CommandMapping;
 
-public class ContextLoaderListener implements ApplicationContextListener {
+@WebListener
+public class ContextLoaderListener implements ServletContextListener {
 
   private static final Logger logger = LogManager.getLogger(ContextLoaderListener.class);
   
   @Override
-  public void contextInitialized(Map<String,Object> context) {
+  public void contextInitialized(ServletContextEvent sce) {
+    
+    ServletContext context = sce.getServletContext();
+    
     logger.debug("ContextLoaderListener.contextInitialized() 실행!");
 
     try {
@@ -25,12 +31,12 @@ public class ContextLoaderListener implements ApplicationContextListener {
       ApplicationContext iocContainer = 
           new AnnotationConfigApplicationContext(AppConfig.class);
 
-      context.put("iocContainer", iocContainer);
+      context.setAttribute("iocContainer", iocContainer);
 
       // @CommandMapping 애노테이션이 붙은 메서드를 찾아 따로 보관한다.
       CommandMappingHandlerMapping handlerMapping = createCommandMappingHandlerMapping(iocContainer);
 
-      context.put("handlerMapping", handlerMapping);
+      context.setAttribute("handlerMapping", handlerMapping);
 
     } catch (Exception e) {
       e.printStackTrace();
@@ -79,7 +85,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
   }
 
   @Override
-  public void contextDestroyed(Map<String,Object> context) {
+  public void contextDestroyed(ServletContextEvent sce) {
     logger.debug("ContextLoaderListener.contextInitialized() 실행!");
   }
 }

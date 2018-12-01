@@ -63,8 +63,44 @@ Web 기술 도입하기
 
 index.html 에 작성한 문구를 웹 브라우저 화면에 출력한다.
 
+
+### ver 6.3.1 - 기존의 명령 핸들러를 HTTP 요청을 처리하는 클래스로 바꿔라.
+
+#### 1단계) 웹 애플리케이션이 시작될 때 핸들러와 DAO, MyBatis를 준비한다.
+
+- ContextLoaderListener.java
+    - 클래스를 `ServletContextListener` 인터페이스의 규칙에 맞춘다.
+    - 즉 웹 애플리케이션이 시작하거나 종료할 때 특정 메서드가 호출된다.
+- ApplicationContextListener.java
+    - 이 인터페이스를 제거한다.
+
+#### 2단계) App 클래스를 서블릿으로 전환한다.
+
+- App.java
+    - `javax.servlet.Servlet` 인터페이스의 규칙에 따라 변경한다.
+
+#### 3단계) 명령처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- 메서드의 파라미터를 변경한다.
+    - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+- Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
+    - 사용자가 보낸 데이터를 한 번에 꺼낸다.
+- Servlet 규칙에 따라 HTML 페이지를 출력한다.
+    - HTML 태그를 사용하여 출력 화면을 만들어 웹 브라우저로 보낸다.
+- LessonHandler.java
+    - list() 변경
+    - detail() 변경
+    - form.html 추가
+    - add() 변경
+
 ## 실습 소스
 
-- build.gradle 변경
-- src/main/webapp 디렉토리 생성
-- src/main/webapp/index.html 추가
+- com/eomcs/lms/ContextLoaderListener.java 변경
+- com/eomcs/context/ApplicationContextListener.java 삭제 
+- com/eomcs/lms/App.java 변경
+- com/eomcs/lms/handler/LessonHandler.java 변경
+- src/main/webapp/lesson/form.html 추가
+- com/eomcs/lms/handler/MemberHandler.java 변경
+- com/eomcs/lms/handler/BoardHandler.java 변경
+- com/eomcs/lms/handler/PhotoBoardHandler.java 변경
+- com/eomcs/lms/handler/AuthHandler.java 변경

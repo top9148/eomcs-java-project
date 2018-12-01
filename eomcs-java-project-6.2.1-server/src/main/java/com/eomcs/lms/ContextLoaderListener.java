@@ -17,7 +17,7 @@ public class ContextLoaderListener implements ApplicationContextListener {
   
   @Override
   public void contextInitialized(Map<String,Object> context) {
-    logger.debug("DataLoaderListener.contextInitialized() 실행!");
+    logger.debug("ContextLoaderListener.contextInitialized() 실행!");
 
     try {
 
@@ -80,6 +80,6 @@ public class ContextLoaderListener implements ApplicationContextListener {
 
   @Override
   public void contextDestroyed(Map<String,Object> context) {
-    logger.debug("DataLoaderListener.contextInitialized() 실행!");
+    logger.debug("ContextLoaderListener.contextInitialized() 실행!");
   }
 }
