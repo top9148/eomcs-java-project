@@ -22,6 +22,18 @@ dependencies {
     // MyBatis 퍼시스턴스 프레임워크
     compile group: 'org.mybatis', name: 'mybatis', version: '3.4.6'
     
+    // MyBatis-Spring 연동 라이브러리
+    compile group: 'org.mybatis', name: 'mybatis-spring', version: '1.3.2'
+    
+    // DB 커넥션풀
+    compile group: 'org.apache.commons', name: 'commons-dbcp2', version: '2.5.0'
+    
+    // Spring JDBC 관련 라이브러리
+    compile group: 'org.springframework', name: 'spring-jdbc', version: '5.1.3.RELEASE'
+    
+    // Log4j 2 라이브러리 
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+
     compile 'com.google.guava:guava:23.0'
     testCompile 'junit:junit:4.12'
 }

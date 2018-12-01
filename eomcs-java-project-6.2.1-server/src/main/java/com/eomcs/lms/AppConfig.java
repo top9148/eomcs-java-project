@@ -51,7 +51,7 @@ public class AppConfig {
         "classpath:/com/eomcs/lms/mapper/**/*.xml"));
     
     // Mybatis에서 사용하는 로깅 라이브러리를 지정한다.
-    org.apache.ibatis.logging.LogFactory.useLog4JLogging();
+    org.apache.ibatis.logging.LogFactory.useLog4J2Logging();
     
     return factory.getObject();
 
