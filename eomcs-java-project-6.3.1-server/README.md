@@ -159,3 +159,4 @@ index.html 에 작성한 문구를 웹 브라우저 화면에 출력한다.
 - src/main/webapp/photoboard/form.html 추가
 - com/eomcs/lms/handler/AuthHandler.java 변경
 - src/main/webapp/auth/form.html 추가
+- src/main/webapp/index.html 변경
