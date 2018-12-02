@@ -1,5 +1,4 @@
 package com.eomcs.lms.handler;
-import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.HashMap;
@@ -23,12 +22,6 @@ public class LessonHandler {
 
   @CommandMapping("/lesson/add")
   public void add(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    PrintWriter out = response.getWriter();
-    out.println("<!DOCTYPE html>");
-    out.println("<html>");
-    out.println("<head><title>수업관리</title></head>");
-    out.println("<body>");
-    out.println("<h1>수업 추가</h1>");
 
     Lesson lesson = new Lesson();
     lesson.setTitle(request.getParameter("title"));
@@ -40,30 +33,49 @@ public class LessonHandler {
     lesson.setOwnerNo(Integer.parseInt(request.getParameter("ownerNo")));
 
     lessonDao.add(lesson);
-    out.println("<p>수업을 저장했습니다.</p>");
 
+    PrintWriter out = response.getWriter();
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head><title>수업관리</title></head>");
+    out.println("<body>");
+    out.println("<h1>수업 추가</h1>");
+    out.println("<p>수업을 저장했습니다.</p>");
     out.println("</body>");
     out.println("</html>");
+    
+    response.setHeader("Refresh", "1;url=list");
   }
 
   @CommandMapping("/lesson/delete")
-  public void delete(BufferedReader in, PrintWriter out) {
-    try {
-      out.print("번호?\n!{}!\n"); out.flush();
-      int no = Integer.parseInt(in.readLine());
+  public void delete(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-      if (lessonDao.delete(no) > 0) 
-        out.println("수업을 삭제했습니다.");
-      else 
-        out.println("해당 수업을 찾을 수 없습니다.");
+    int no = Integer.parseInt(request.getParameter("no"));
+    PrintWriter out = response.getWriter();
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head><title>수업관리</title></head>");
+    out.println("<body>");
+    out.println("<h1>수업 삭제</h1>");
 
-    } catch (Exception e) {
-      out.printf("%s : %s\n", e.toString(), e.getMessage());
-    }
+    if (lessonDao.delete(no) > 0) 
+      out.println("<p>수업을 삭제했습니다.</p>");
+    else 
+      out.println("<p>해당 수업을 찾을 수 없습니다.</p>");
+    
+    out.println("</body>");
+    out.println("</html>");
+
+    response.setHeader("Refresh", "1;url=list");
   }
 
   @CommandMapping("/lesson/detail")
   public void detail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    int no = Integer.parseInt(request.getParameter("no"));
+
+    Lesson lesson = lessonDao.detail(no);
+
     PrintWriter out = response.getWriter();
     out.println("<!DOCTYPE html>");
     out.println("<html>");
@@ -71,22 +83,36 @@ public class LessonHandler {
     out.println("<body>");
     out.println("<h1>수업 상세 정보</h1>");
 
-    int no = Integer.parseInt(request.getParameter("no"));
-
-    Lesson lesson = lessonDao.detail(no);
-
     if (lesson == null) { 
       out.println("<p>해당 수업을 찾을 수 없습니다.</p>");
 
     } else {
+      out.println("<form action='/app/lesson/update' method='post'>");
+      out.printf("<input type='hidden' name='no' value='%d'>\n", no);
       out.println("<table border='1'>");
-      out.printf("<tr><th>수업명</th><td>%s</td></tr>\n", lesson.getTitle());
-      out.printf("<tr><th>설명</th><td>%s</td></tr>\n", lesson.getContents());
-      out.printf("<tr><th>기간</th><td>%s ~ %s</td></tr>\n", lesson.getStartDate(), lesson.getEndDate());
-      out.printf("<tr><th>총수업시간</th><td>%d</td></tr>\n", lesson.getTotalHours());
-      out.printf("<tr><th>일수업시간</th><td>%d</td></tr>\n", lesson.getDayHours());
-      out.printf("<tr><th>강사</th><td>%d</td></tr>\n", lesson.getOwnerNo());
+      out.printf("<tr><th>수업명</th>"
+          + "<td><input type='text' name='title' value='%s'></td></tr>\n", 
+          lesson.getTitle());
+      out.printf("<tr><th>설명</th>"
+          + "<td><textarea name='contents' cols='50' rows='5'>%s</textarea></td></tr>\n", 
+          lesson.getContents());
+      out.printf("<tr><th>기간</th>"
+          + "<td><input type='text' name='startDate' value='%s'> ~ "
+          + "<input type='text' name='endDate' value='%s'></td></tr>\n", 
+          lesson.getStartDate(), lesson.getEndDate());
+      out.printf("<tr><th>총수업시간</th>"
+          + "<td><input type='number' name='totalHours' value='%d'></td></tr>\n", 
+          lesson.getTotalHours());
+      out.printf("<tr><th>일수업시간</th>"
+          + "<td><input type='number' name='dayHours' value='%d'></td></tr>\n", 
+          lesson.getDayHours());
+      out.printf("<tr><th>강사</th>"
+          + "<td><input type='number' name='ownerNo' value='%d'></td></tr>\n", 
+          lesson.getOwnerNo());
+      out.println("<tr><th></th><td><button>변경</button>");
+      out.printf("<a href='delete?no=%d'>삭제</a></td></tr>\n", no);
       out.println("</table>");
+      out.println("</form>");
     }
     out.println("</body>");
     out.println("</html>");
@@ -94,6 +120,8 @@ public class LessonHandler {
 
   @CommandMapping("/lesson/list")
   public void list(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+    List<Lesson> lessons = lessonDao.list(null);
 
     PrintWriter out = response.getWriter();
     out.println("<!DOCTYPE html>");
@@ -106,7 +134,6 @@ public class LessonHandler {
     out.println("<table border='1'>");
     out.println("<tr> <th>번호</th> <th>수업</th> <th>수업 기간</th> <th>수업시간</th> </tr>");
 
-    List<Lesson> lessons = lessonDao.list(null);
     for (Lesson lesson : lessons) {
       out.println("<tr>");
       out.printf("<td>%d</td>\n", lesson.getNo());
@@ -116,103 +143,85 @@ public class LessonHandler {
       out.println("</tr>");
     }
     out.println("</table>");
+
+    out.println("<p><a href='/lesson/search.html'>검색</a></p>");
     out.println("</body>");
     out.println("</html>");
   }
 
   @CommandMapping("/lesson/search")
-  public void search(BufferedReader in, PrintWriter out) {
-    try {
-      Map<String,Object> params = new HashMap<>();
+  public void search(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-      out.print("수업명?\n!{}!\n"); out.flush();
-      String value = in.readLine();
-      if (value.length() > 0) {
-        params.put("title", value);
-      }
-
-      out.print("설명?\n!{}!\n"); out.flush();
-      value = in.readLine();
-      if (value.length() > 0) {
-        params.put("contents", value);
-      }
-
-      out.print("시작일(<=)?\n!{}!\n"); out.flush();
-      value = in.readLine();
-      if (value.length() > 0) {
-        params.put("startDate", Date.valueOf(value));
-      }
-
-      out.print("종료일(<=)?\n!{}!\n"); out.flush();
-      value = in.readLine();
-      if (value.length() > 0) {
-        params.put("endDate", Date.valueOf(value));
-      }
-
-      List<Lesson> lessons = lessonDao.list(params);
-      if (lessons == null) { 
-        out.println("서버에서 데이터를 가져오는데 오류 발생!");
-        return;
-      }
-
-      for (Lesson lesson : lessons) {
-        out.printf("%3d, %-15s, %10s ~ %10s, %4d\n", 
-            lesson.getNo(), lesson.getTitle(), 
-            lesson.getStartDate(), lesson.getEndDate(), lesson.getTotalHours());
-      }
-
-    } catch (Exception e) {
-      out.printf("%s : %s\n", e.toString(), e.getMessage());
+    Map<String,Object> params = new HashMap<>();
+    String value = request.getParameter("title");
+    if (value.length() > 0) {
+      params.put("title", value);
     }
+    value = request.getParameter("contents");
+    if (value.length() > 0) {
+      params.put("contents", value);
+    }
+    value = request.getParameter("startDate");
+    if (value.length() > 0) {
+      params.put("startDate", Date.valueOf(value));
+    }
+    value = request.getParameter("endDate");
+    if (value.length() > 0) {
+      params.put("endDate", Date.valueOf(value));
+    }
+
+    List<Lesson> lessons = lessonDao.list(params);
+
+    PrintWriter out = response.getWriter();
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head><title>수업관리</title></head>");
+    out.println("<body>");
+    out.println("<h1>검색 결과</h1>");
+
+    out.println("<table border='1'>");
+    out.println("<tr> <th>번호</th> <th>수업</th> <th>수업 기간</th> <th>수업시간</th> </tr>");
+
+    for (Lesson lesson : lessons) {
+      out.println("<tr>");
+      out.printf("<td>%d</td>\n", lesson.getNo());
+      out.printf("<td><a href='detail?no=%d'>%s</a></td>\n", lesson.getNo(), lesson.getTitle());
+      out.printf("<td>%s ~ %s</td>\n", lesson.getStartDate(), lesson.getEndDate());
+      out.printf("<td>%d</td>\n", lesson.getTotalHours());
+      out.println("</tr>");
+    }
+    out.println("</table>");
+
+    out.println("</body>");
+    out.println("</html>");
+
   }
 
   @CommandMapping("/lesson/update")
-  public void update(BufferedReader in, PrintWriter out) {
+  public void update(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    try {
-      out.print("번호?\n!{}!\n"); out.flush();
-      int no = Integer.parseInt(in.readLine());
+    Lesson lesson = new Lesson();
+    lesson.setNo(Integer.parseInt(request.getParameter("no")));
+    lesson.setTitle(request.getParameter("title"));
+    lesson.setContents(request.getParameter("contents"));
+    lesson.setStartDate(Date.valueOf(request.getParameter("startDate")));
+    lesson.setEndDate(Date.valueOf(request.getParameter("endDate")));
+    lesson.setTotalHours(Integer.parseInt(request.getParameter("totalHours")));
+    lesson.setDayHours(Integer.parseInt(request.getParameter("dayHours")));
+    lesson.setOwnerNo(Integer.parseInt(request.getParameter("ownerNo")));
 
-      Lesson lesson = lessonDao.detail(no);
-      if (lesson == null) { 
-        out.println("해당 게시글을 찾을 수 없습니다.");
-        return;
-      }
+    lessonDao.update(lesson);
 
-      out.printf("수업명(%s)?\n!{}!\n", lesson.getTitle()); out.flush();
-      String input = in.readLine();
-      if (input.length() > 0) 
-        lesson.setTitle(input);
+    PrintWriter out = response.getWriter();
+    out.println("<!DOCTYPE html>");
+    out.println("<html>");
+    out.println("<head><title>수업관리</title></head>");
+    out.println("<body>");
+    out.println("<h1>수업 변경</h1>");
+    out.println("<p>수업을 변경했습니다.</p>");
+    out.println("</body>");
+    out.println("</html>");
 
-      out.printf("설명(%s)?\n!{}!\n", lesson.getContents()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setContents(input);
-
-      out.printf("시작일(%s)?\n!{}!\n", lesson.getStartDate()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setStartDate(Date.valueOf(input));
-
-      out.printf("종료일(%s)?\n!{}!\n", lesson.getEndDate()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setEndDate(Date.valueOf(input));
-
-      out.printf("총수업시간(%d)?\n!{}!\n", lesson.getTotalHours()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setTotalHours(Integer.parseInt(input));
-
-      out.printf("일수업시간(%d)?\n!{}!\n", lesson.getDayHours()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setDayHours(Integer.parseInt(input));
-
-      out.printf("강사(%d)?\n!{}!\n", lesson.getOwnerNo()); out.flush();
-      if ((input = in.readLine()).length() > 0)
-        lesson.setOwnerNo(Integer.parseInt(input));
-
-      lessonDao.update(lesson);
-      out.println("수업을 변경했습니다.");
-
-    } catch (Exception e) {
-      out.printf("%s : %s\n", e.toString(), e.getMessage());
-    }
+    response.setHeader("Refresh", "1;url=list");
   }
 }

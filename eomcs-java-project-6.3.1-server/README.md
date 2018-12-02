@@ -56,7 +56,7 @@ Web 기술 도입하기
 
 - 웹 애플리케이션 실행
     - 톰캣 실행 환경에서 서버를 시작한다.
-- 웹 브라우저를 이용하여 서버에 접속 
+- 웹 브라우저를 이용하여 서버에 접속
     - URL `http://localhost:8080/`으로 접속한다.
 
 ##### 실습 결과
@@ -79,28 +79,83 @@ index.html 에 작성한 문구를 웹 브라우저 화면에 출력한다.
 - App.java
     - `javax.servlet.Servlet` 인터페이스의 규칙에 따라 변경한다.
 
-#### 3단계) 명령처리 핸들러를 새 호출 규칙에 따라 변경한다.
+#### 3단계) '/lesson/list' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
 
-- 메서드의 파라미터를 변경한다.
-    - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
-- Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
-    - 사용자가 보낸 데이터를 한 번에 꺼낸다.
-- Servlet 규칙에 따라 HTML 페이지를 출력한다.
-    - HTML 태그를 사용하여 출력 화면을 만들어 웹 브라우저로 보낸다.
-- LessonHandler.java
-    - list() 변경
-    - detail() 변경
-    - form.html 추가
-    - add() 변경
+- list() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+  - HTML 태그를 사용하여 출력 화면을 만들어 웹 브라우저로 보낸다.
+
+#### 4단계) '/lesson/detail' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- list()
+  - a 태그를 이용하여 제목에 detail 명령으로 링크를 건다.
+- detail() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 클라이언트가 보낸 no 값을 꺼낸다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+
+
+#### 5단계) '/lesson/add' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- src/main/webapp/lesson/form.html
+  - 수업 입력폼 페이지지를 만든다.
+- list()
+  - a 태그를 이용하여 form.html 페이지로 링크를 건다.
+- add() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+
+#### 6단계) '/lesson/update' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- detail()
+  - input 태그를 사용하여 값을 변경할 수 있는 페이지로 바꾼다.
+- update() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+
+#### 7단계) '/lesson/search' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- src/main/webapp/lesson/search.html
+  - 수업 검색폼 페이지지를 만든다.
+- list()
+  - a 태그를 이용하여 검색폼 페이지로 링크를 건다.
+- search() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+
+
+#### 8단계) '/lesson/delete' 명령 처리 핸들러를 새 호출 규칙에 따라 변경한다.
+
+- detail()
+  - a 태그를 이용하여 delete 명령으로 링크를 건다.
+- delete() 메서드의 파라미터를 변경한다.
+  - 기존의 파라미터 대신에 `HttpServletRequest`와 `HttpServletResponse` 값을 받는 파라미터로 바꾼다.
+  - Servlet 규칙에 따라 클라이언트가 보낸 값을 꺼낸다.
+  - Servlet 규칙에 따라 HTML 페이지를 출력한다.
+
+#### 9단계) MemberHandler, BoardHandler, PhotoBoardHandler, AuthHandler 도 새 호출 규칙에 따라 변경한다.
+
+각 명령 처리 핸들러에 대해 위의 3단계에서 8단계까지 작업을 반복 수행한다.
+
 
 ## 실습 소스
 
 - com/eomcs/lms/ContextLoaderListener.java 변경
-- com/eomcs/context/ApplicationContextListener.java 삭제 
+- com/eomcs/context/ApplicationContextListener.java 삭제
 - com/eomcs/lms/App.java 변경
 - com/eomcs/lms/handler/LessonHandler.java 변경
 - src/main/webapp/lesson/form.html 추가
+- src/main/webapp/lesson/search.html 추가
 - com/eomcs/lms/handler/MemberHandler.java 변경
+- src/main/webapp/member/form.html 추가
+- src/main/webapp/member/search.html 추가
 - com/eomcs/lms/handler/BoardHandler.java 변경
+- src/main/webapp/board/form.html 추가
 - com/eomcs/lms/handler/PhotoBoardHandler.java 변경
+- src/main/webapp/photoboard/form.html 추가
 - com/eomcs/lms/handler/AuthHandler.java 변경
+- src/main/webapp/auth/form.html 추가

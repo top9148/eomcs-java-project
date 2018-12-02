@@ -279,9 +279,8 @@ MyBatis에서도 DAO 인터페이스를 구현한 객체를 만들어 줄 수 �
 - com/eomcs/lms/mapper/PhotoBoardMapper.xml 변경
 - com/eomcs/lms/mapper/PhotoFileMapper.xml 변경
 - com/eomcs/lms/App.java 변경
-- com/eomcs/DaoInvocationHandler.java 삭제
-- com/eomcs/MybatisDaoFactory.java 삭제
-- com/eomcs/SqlSessionFactoryProxy.java 삭제
-- com/eomcs/SqlSessionProxy.java 삭제
-- com/eomcs/TransactionManager.java 삭제
-
+- com/eomcs/sql/DaoInvocationHandler.java 삭제
+- com/eomcs/sql/MybatisDaoFactory.java 삭제
+- com/eomcs/sql/SqlSessionFactoryProxy.java 삭제
+- com/eomcs/sql/SqlSessionProxy.java 삭제
+- com/eomcs/sql/TransactionManager.java 삭제
