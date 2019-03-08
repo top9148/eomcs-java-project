@@ -29,7 +29,7 @@ public class ServerTest {
     m.setTel("1111-2222");
 
     add(m);
-    
+
     m = new Member();
     m.setNo(2);
     m.setName("임꺽정");
@@ -39,11 +39,11 @@ public class ServerTest {
     m.setTel("1111-3333");
 
     add(m);
-    
+
     list();
 
     quit();
-    
+
     in.close();
     out.close();
     socket.close();
@@ -60,7 +60,7 @@ public class ServerTest {
     System.out.println(in.readUTF());
 
   }
-  
+
   private static void list() throws Exception {
 
     out.writeUTF("list");
@@ -68,13 +68,13 @@ public class ServerTest {
 
     @SuppressWarnings("unchecked")
     List<Member> list = (List<Member>) in.readObject();
-    
+
     for (Member m : list) {
       System.out.println(m);
     }
 
   }
-  
+
   private static void quit() throws Exception {
     out.writeUTF("quit");
     out.flush();
